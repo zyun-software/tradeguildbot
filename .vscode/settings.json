@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.preferences.quoteStyle": "single",
+  "window.autoDetectColorScheme": true,
+  "files.autoSave": "afterDelay",
+  "prettier.singleQuote": true,
+  "workbench.colorTheme": "Default Dark Modern"
+}
