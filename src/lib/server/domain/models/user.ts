@@ -1,11 +1,13 @@
-import { Entity } from '$lib/server/core';
+import { Entity, RepositoryId, type RepositorySave } from '$lib/server/core';
 
-export interface UserRepository {
-	updateRoute(entity: UserEntity): Promise<void>;
-	updateData(entity: UserEntity): Promise<void>;
+export abstract class UserRepository
+	extends RepositoryId<UserEntity>
+	implements RepositorySave<UserEntity>
+{
+	public abstract updateRoute(entity: UserEntity): Promise<void>;
+	public abstract updateData(entity: UserEntity): Promise<void>;
 
-	findById(id: number): Promise<UserEntity | null>;
-	save(entity: UserEntity): Promise<UserEntity>;
+	public abstract save(entity: UserEntity): Promise<UserEntity>;
 }
 
 export class UserDefaultValue {
@@ -13,47 +15,36 @@ export class UserDefaultValue {
 	public static data: any = {};
 }
 
-export class UserEntity extends Entity<UserRepository> {
-	public set id(value: number) {
-		if (!this.__created) {
-			this._id = value;
-		}
-	}
+export type UserModel = {
+	id: number;
+	route: string;
+	data: string;
+};
 
-	private _route: string = UserDefaultValue.route;
-
+export class UserEntity extends Entity<UserModel, UserRepository> {
 	public get route(): string {
-		return this._route;
+		return this.__model.route;
 	}
 
-	public set route(value: string) {
-		this._route = value;
+	public async setRoute(value: string): Promise<UserEntity> {
+		this.__model.route = value;
 		if (this.__created) {
-			this.__repository.updateRoute(this);
+			await this.__repository.updateRoute(this);
 		}
-	}
 
-	private _data: any = UserDefaultValue.data;
+		return this;
+	}
 
 	public get data(): any {
-		return this._data;
+		return this.__model.data;
 	}
 
-	public set data(value: any) {
-		this._data = value;
+	public async setData(value: any): Promise<UserEntity> {
+		this.__model.data = value;
 		if (this.__created) {
 			this.__repository.updateData(this);
 		}
-	}
 
-	public constructor(created: boolean, repository: UserRepository) {
-		super({ created, repository });
-	}
-
-	public create(): Promise<UserEntity> {
-		const entity = this.__repository.save(this);
-		this.__created = true;
-
-		return entity;
+		return this;
 	}
 }

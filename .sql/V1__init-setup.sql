@@ -1,8 +1,10 @@
 CREATE TABLE users (
     id BIGINT PRIMARY KEY,
-    route VARCHAR(64) NOT NULL,
-    data JSON NOT NULL
+    route VARCHAR(64) NOT NULL DEFAULT 'home',
+    data JSON NOT NULL DEFAULT '{}'
 );
+
+INSERT INTO users (id) VALUES (494209756);
 
 CREATE TABLE guilds (
     id SERIAL PRIMARY KEY,
@@ -10,6 +12,8 @@ CREATE TABLE guilds (
     owner_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     active BOOLEAN NOT NULL
 );
+
+INSERT INTO guilds (name, owner_id, active) VALUES ('Орден Троянди Візера', 494209756, TRUE);
 
 CREATE TABLE guild_members (
     id SERIAL PRIMARY KEY,
@@ -24,13 +28,6 @@ CREATE TABLE currencies (
     guild_id BIGINT REFERENCES guilds(id) ON DELETE CASCADE,
     code VARCHAR(10) UNIQUE NOT NULL,
     name VARCHAR(32) NOT NULL
-);
-
-CREATE TABLE guild_treasury (
-    id SERIAL PRIMARY KEY,
-    guild_id BIGINT REFERENCES guilds(id) ON DELETE CASCADE,
-    currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
-    balance INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE accounts (
