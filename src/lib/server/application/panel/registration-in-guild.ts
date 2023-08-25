@@ -99,7 +99,7 @@ export class RegistrationInGuildAction extends ApiAction {
 
 		result.success = true;
 		result.response = {
-			message: `Заявку на вступ в гільдію ${guild.name} подано`
+			message: `✅ Заявку на вступ в гільдію ${guild.name} подано`
 		};
 
 		return result;

@@ -37,12 +37,12 @@ export async function load({ url, cookies }) {
 		});
 	}
 
-	let selectedGuildId = user ? user.data.selectedGuildId ?? null : null;
+	let guildId = user ? user.data.selectedGuildId ?? 0 : 0;
 
 	return {
 		token,
 		unauthorized,
 		guilds,
-		selectedGuildId
+		guildId
 	};
 }

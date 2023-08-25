@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { guilds, pageComponent, selectedGuildId } from '$lib/stores';
 	import type { GuildType, MenuButtonType } from '$lib/types';
-	import { alertUtility, requestUtility, showTelegramWebAppButton } from '$lib/utilities';
+	import { alertUtility, requestUtility, showBackButton } from '$lib/utilities';
 	import { onMount } from 'svelte';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
 	import Hint from '../parts/hint.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Title from '../parts/title.svelte';
+	import Control from './control.svelte';
 	import Guilds from './guilds.svelte';
 
 	onMount(() => {
-		showTelegramWebAppButton('До списку гільдій', () => {
+		showBackButton(() => {
 			selectedGuildId.set(null);
 			pageComponent.set(Guilds);
 		});
@@ -27,7 +28,8 @@
 		if (guild.isOwner) {
 			buttons.push({
 				emoji: '🎛️',
-				text: 'Керування'
+				text: 'Керування',
+				component: Control
 			});
 		}
 
@@ -42,7 +44,7 @@
 					text: 'Біржа'
 				},
 				{
-					emoji: '📢',
+					emoji: '🛒',
 					text: 'Оголошення'
 				},
 				{
@@ -73,7 +75,7 @@
 			});
 			if (response) {
 				guild.nickname = registerForm.data.nickname;
-				alertUtility(`✅ ${response.message}`);
+				alertUtility(response.message);
 			}
 			registerForm.disabled = false;
 		}
@@ -89,9 +91,7 @@
 			: ''}, <b>{guild.nickname}</b>! Ви знаходитесь в головному меню гільдії."
 	/>
 
-	<div class="px-2">
-		<Menu {buttons} />
-	</div>
+	<Menu {buttons} />
 {:else if guild.nickname}
 	<Hint text="ℹ️ {guild.nickname}, ваша заявка на вступ була подана гільдмайстру." />
 {:else}

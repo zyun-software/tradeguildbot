@@ -9,6 +9,7 @@
 
 	import {
 		currentPageComponent,
+		guildId,
 		guilds,
 		pageComponent,
 		selectedGuildId,
@@ -17,7 +18,8 @@
 
 	token.set(data.token);
 	guilds.set(data.guilds);
-	selectedGuildId.set(data.selectedGuildId);
+	guildId.set(data.guildId);
+	selectedGuildId.set(data.guildId);
 
 	pageComponent.subscribe((component) => {
 		if (data.unauthorized) {

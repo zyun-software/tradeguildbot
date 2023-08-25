@@ -11,20 +11,47 @@ export function alertUtility(message: any): void {
 	}
 }
 
-export function hideTelegramWebAppButton(): void {
+export function hideMainButton(): void {
 	const webApp = window?.Telegram?.WebApp;
 	if (webApp) {
 		webApp.MainButton.hide();
 	}
 }
 
-export function showTelegramWebAppButton(text: string, handler: () => Promise<void> | void): void {
+export function hideBackButton(): void {
+	const webApp = window?.Telegram?.WebApp;
+	if (webApp) {
+		webApp.BackButton.hide();
+	}
+}
+
+type HandlerType = () => Promise<void> | void;
+
+let mainButtonHandler: HandlerType | null = null;
+export function showMainButton(text: string, handler: HandlerType): void {
 	const webApp = window?.Telegram?.WebApp;
 	if (webApp) {
 		const MainButton = webApp.MainButton;
 		MainButton.text = text;
-		MainButton.show();
+		if (mainButtonHandler) {
+			MainButton.offClick(mainButtonHandler);
+		}
+		mainButtonHandler = handler;
 		MainButton.onClick(handler);
+	}
+}
+
+let backButtonHandler: HandlerType | null = null;
+export function showBackButton(handler: HandlerType): void {
+	const webApp = window?.Telegram?.WebApp;
+	if (webApp) {
+		const BackButton = webApp.BackButton;
+		if (backButtonHandler) {
+			BackButton.offClick(backButtonHandler);
+		}
+		backButtonHandler = handler;
+		BackButton.onClick(handler);
+		BackButton.show();
 	}
 }
 
