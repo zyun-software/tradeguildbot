@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { guilds, pageComponent, selectedGuildId } from '$lib/stores';
 	import type { GuildType, MenuButtonType } from '$lib/types';
-	import { requestUtility, showTelegramWebAppButton } from '$lib/utilities';
+	import { alertUtility, requestUtility, showTelegramWebAppButton } from '$lib/utilities';
 	import { onMount } from 'svelte';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
@@ -61,7 +61,22 @@
 	}
 
 	const registerForm = {
-		nickname: ''
+		data: {
+			nickname: ''
+		},
+		disabled: false,
+		handler: async () => {
+			registerForm.disabled = true;
+			const response = await requestUtility<{ message: string }>('registration-in-guild', {
+				guild_id: guild.id,
+				nickname: registerForm.data.nickname
+			});
+			if (response) {
+				guild.nickname = registerForm.data.nickname;
+				alertUtility(`✅ ${response.message}`);
+			}
+			registerForm.disabled = false;
+		}
 	};
 </script>
 
@@ -70,7 +85,7 @@
 {#if guild.isMember}
 	<Hint
 		text="👋 Вітаю вас{guild.isOwner
-			? ' гільдмайстере'
+			? ' гільдмайстре'
 			: ''}, <b>{guild.nickname}</b>! Ви знаходитесь в головному меню гільдії."
 	/>
 
@@ -84,21 +99,15 @@
 		text="ℹ️ Для того, щоб приєднатися до гільдії, вам необхідно зареєструватися. Для цього вам потрібно подати заявку на вступ."
 	/>
 	<div class="px-2">
-		<Form
-			onSubmit={async () => {
-				await requestUtility('registration-in-guild');
-				// guild.nickname = registerForm.nickname;
-				console.log(registerForm);
-			}}
-		>
+		<Form onSubmit={registerForm.handler}>
 			<Input
 				id="nickname"
 				name="Псевдонім"
-				value={registerForm.nickname}
+				value={registerForm.data.nickname}
 				required={true}
-				onInput={(value) => (registerForm.nickname = value)}
+				onInput={(value) => (registerForm.data.nickname = value)}
 			/>
-			<button class="w-full bg-green-600">Подати заявку</button>
+			<button disabled={registerForm.disabled} class="w-full bg-green-600">Подати заявку</button>
 		</Form>
 	</div>
 {/if}

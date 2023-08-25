@@ -9,7 +9,17 @@ export abstract class GuildMemberRepository
 	public abstract updateName(entity: GuildMemberEntity): Promise<void>;
 	public abstract updateApproved(entity: GuildMemberEntity): Promise<void>;
 
-	public abstract getApprovedListByUserId(id: number): Promise<GuildMemberEntity[]>;
+	public abstract findByUserIdAndGuildId(
+		user_id: number,
+		guild_id: number
+	): Promise<GuildMemberEntity | null>;
+
+	public abstract findByNameAndGuildId(
+		name: string,
+		guild_id: number
+	): Promise<GuildMemberEntity | null>;
+
+	public abstract getListByUserId(id: number): Promise<GuildMemberEntity[]>;
 	public abstract save(entity: GuildMemberEntity): Promise<GuildMemberEntity>;
 }
 

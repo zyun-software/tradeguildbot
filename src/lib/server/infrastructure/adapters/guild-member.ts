@@ -48,11 +48,41 @@ export class GuildMemberAdapter extends GuildMemberRepository {
     `;
 	}
 
-	public async getApprovedListByUserId(id: number): Promise<GuildMemberEntity[]> {
+	public async findByUserIdAndGuildId(
+		user_id: number,
+		guild_id: number
+	): Promise<GuildMemberEntity | null> {
+		const models = await sql<GuildMemberModel[]>`
+			SELECT *
+			FROM ${sql(table)}
+			WHERE user_id = ${user_id} AND guild_id = ${guild_id}
+		`;
+
+		const result = this._find(models);
+
+		return result;
+	}
+
+	public async findByNameAndGuildId(
+		name: string,
+		guild_id: number
+	): Promise<GuildMemberEntity | null> {
+		const models = await sql<GuildMemberModel[]>`
+			SELECT *
+			FROM ${sql(table)}
+			WHERE LOWER(name) = LOWER(${name}) AND guild_id = ${guild_id}
+		`;
+
+		const result = this._find(models);
+
+		return result;
+	}
+
+	public async getListByUserId(id: number): Promise<GuildMemberEntity[]> {
 		const models = await sql<GuildMemberModel[]>`
       SELECT *
       FROM ${sql(table)}
-      WHERE user_id = ${id} AND approved = true
+      WHERE user_id = ${id}
     `;
 
 		const entities = models.map(
@@ -67,23 +97,18 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 
 		const query = _created
 			? sql<GuildMemberModel[]>`
-          UPDATE ${sql(table)}
-          SET user_id = ${user_id},
-            guild_id = ${guild_id},
-            name = ${name},
-            approved = ${approved}
-          WHERE id = ${id}
-          RETURNING *`
+				UPDATE ${sql(table)}
+				SET user_id = ${user_id},
+					guild_id = ${guild_id},
+					name = ${name},
+					approved = ${approved}
+				WHERE id = ${id}
+				RETURNING *`
 			: sql<GuildMemberModel[]>`
         INSERT INTO ${sql(table)}
-          (id, user_id, guild_id, name, approved)
+          (user_id, guild_id, name, approved)
         VALUES
-          (${id}, ${user_id}, ${guild_id}, ${name}, ${approved})
-        ON CONFLICT (id) DO UPDATE
-          SET user_id = EXCLUDED.user_id,
-            guild_id = EXCLUDED.guild_id,
-            name = EXCLUDED.name,
-            approved = EXCLUDED.approved
+          (${user_id}, ${guild_id}, ${name}, ${approved})
         RETURNING *`;
 
 		const models = await query;
@@ -104,13 +129,9 @@ export class GuildMemberAdapter extends GuildMemberRepository {
       WHERE id = ${id}
     `;
 
-		if (!models.length) {
-			return null;
-		}
+		const result = this._find(models);
 
-		const entity = new GuildMemberEntity({ model: this._mapper(models[0]), repository: this });
-
-		return entity;
+		return result;
 	}
 
 	private _mapper(row: GuildMemberModel): GuildMemberModel {
@@ -119,5 +140,15 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 			user_id: parseInt(row.user_id.toString()),
 			guild_id: parseInt(row.guild_id.toString())
 		};
+	}
+
+	private _find(models: GuildMemberModel[]): GuildMemberEntity | null {
+		if (!models.length) {
+			return null;
+		}
+
+		const entity = new GuildMemberEntity({ model: this._mapper(models[0]), repository: this });
+
+		return entity;
 	}
 }

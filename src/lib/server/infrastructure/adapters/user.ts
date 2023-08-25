@@ -31,16 +31,9 @@ export class UserAdapter extends UserRepository {
 			WHERE id = ${id}
 		`;
 
-		if (!models.length) {
-			return null;
-		}
-
-		const entity = new UserEntity({
-			model: this._mapper(models[0]),
-			repository: this
-		});
-
-		return entity;
+		const result = this._find(models);
+		
+		return result;
 	}
 
 	public async save(entity: UserEntity): Promise<UserEntity> {
@@ -71,5 +64,15 @@ export class UserAdapter extends UserRepository {
 			...row,
 			id: parseInt(row.id.toString())
 		};
+	}
+
+	private _find(models: UserModel[]): UserEntity | null {
+		if (!models.length) {
+			return null;
+		}
+
+		const entity = new UserEntity({ model: this._mapper(models[0]), repository: this });
+
+		return entity;
 	}
 }

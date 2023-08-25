@@ -105,16 +105,9 @@ export class GuildAdapter extends GuildRepository {
       WHERE id = ${id}
     `;
 
-		if (!models.length) {
-			return null;
-		}
+		const result = this._find(models);
 
-		const entity = new GuildEntity({
-			model: this._mapper(models[0]),
-			repository: this
-		});
-
-		return entity;
+		return result;
 	}
 
 	private _mapper(row: GuildModel): GuildModel {
@@ -122,5 +115,15 @@ export class GuildAdapter extends GuildRepository {
 			...row,
 			owner_id: parseInt(row.owner_id.toString())
 		};
+	}
+
+	private _find(models: GuildModel[]): GuildEntity | null {
+		if (!models.length) {
+			return null;
+		}
+
+		const entity = new GuildEntity({ model: this._mapper(models[0]), repository: this });
+
+		return entity;
 	}
 }

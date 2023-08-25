@@ -1,4 +1,5 @@
 import { DependencyInjection, findUserByTokenUtility } from '$lib/server/application';
+import type { GuildMemberEntity } from '$lib/server/domain/index.js';
 import type { GuildType } from '$lib/types.js';
 
 export async function load({ url, cookies }) {
@@ -18,7 +19,11 @@ export async function load({ url, cookies }) {
 
 	const guilds: GuildType[] = [];
 
-	const guildMembers = await guildMemberRepository.getApprovedListByUserId(user ? user.id : -1);
+	let guildMembers: GuildMemberEntity[] = [];
+
+	if (user) {
+		guildMembers = await guildMemberRepository.getListByUserId(user.id);
+	}
 
 	const guildEntities = await guildRepository.getActiveList();
 	for (const entity of guildEntities) {
@@ -32,13 +37,7 @@ export async function load({ url, cookies }) {
 		});
 	}
 
-	let selectedGuildId: number | null = user ? user.data.selectedGuildId ?? null : null;
-	if (user && selectedGuildId && !(selectedGuildId in guilds)) {
-		selectedGuildId = null;
-		const data = user.data;
-		delete data.selectedGuildId;
-		await user.setData(data);
-	}
+	let selectedGuildId = user ? user.data.selectedGuildId ?? null : null;
 
 	return {
 		token,

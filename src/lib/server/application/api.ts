@@ -14,7 +14,11 @@ export abstract class Api {
 		private _data: any,
 		private _user: UserEntity,
 		private _actions: { [method: string]: ApiAction }
-	) {}
+	) {
+		if (typeof this._data !== 'object') {
+			this._data = {};
+		}
+	}
 
 	public async getResponse(): Promise<null | ApiActionExecuteType> {
 		if (this._method in this._actions) {
