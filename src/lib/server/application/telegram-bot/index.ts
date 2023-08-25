@@ -6,9 +6,9 @@ import {
 } from '$lib/server/domain';
 import { DependencyInjection } from '../dependency-injection';
 import { HomeRoute } from './actions';
-import type { ActionInterace } from './interfaces';
+import type { TelegramBotAction } from './interfaces';
 
-type ActionsType = { [k: string]: ActionInterace };
+type ActionsType = { [k: string]: TelegramBotAction };
 
 export class TelegramBot {
 	private _request: any;

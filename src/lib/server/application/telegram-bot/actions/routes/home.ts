@@ -1,10 +1,9 @@
-import { DONATE_URL, PANEL_URL, TG_TOKEN } from '$env/static/private';
-import { DependencyInjection } from '$lib/server/application';
+import { DONATE_URL, PANEL_URL } from '$env/static/private';
+import { DependencyInjection, createTokenUtility } from '$lib/server/application';
 import type { UserEntity } from '$lib/server/domain';
-import * as jwt from 'jsonwebtoken';
-import { ActionInterace } from '../../interfaces';
+import { TelegramBotAction } from '../../interfaces';
 
-export class HomeRoute extends ActionInterace {
+export class HomeRoute extends TelegramBotAction {
 	private _telegram;
 
 	public constructor() {
@@ -24,14 +23,7 @@ export class HomeRoute extends ActionInterace {
 					text: `[Посилання для пожертв](${DONATE_URL})`
 				});
 			default:
-				const token = jwt.sign(
-					{
-						userId: user.id,
-						type: 'panel'
-					},
-					TG_TOKEN,
-					{ expiresIn: '100y' }
-				);
+				const token = createTokenUtility(user.id, 'panel');
 
 				await this._telegram('setChatMenuButton', {
 					chat_id: user.id,

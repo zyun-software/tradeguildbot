@@ -1,11 +1,15 @@
-import { Entity, type RepositorySave } from '$lib/server/core';
+import { Entity, RepositoryId, type RepositorySave } from '$lib/server/core';
 
-export abstract class GuildMemberRepository implements RepositorySave<GuildMemberEntity> {
+export abstract class GuildMemberRepository
+	extends RepositoryId<GuildMemberEntity>
+	implements RepositorySave<GuildMemberEntity>
+{
 	public abstract updateUserId(entity: GuildMemberEntity): Promise<void>;
 	public abstract updateGuildId(entity: GuildMemberEntity): Promise<void>;
 	public abstract updateName(entity: GuildMemberEntity): Promise<void>;
 	public abstract updateApproved(entity: GuildMemberEntity): Promise<void>;
 
+	public abstract getApprovedListByUserId(id: number): Promise<GuildMemberEntity[]>;
 	public abstract save(entity: GuildMemberEntity): Promise<GuildMemberEntity>;
 }
 

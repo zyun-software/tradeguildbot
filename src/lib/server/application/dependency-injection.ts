@@ -1,16 +1,33 @@
-import type { RequestRepository, UserRepository } from '../domain';
-import { RequestAdapter, UserAdapter } from '../infrastructure';
+import type {
+	GuildMemberRepository,
+	GuildRepository,
+	RequestRepository,
+	UserRepository
+} from '../domain';
+import { GuildAdapter, GuildMemberAdapter, RequestAdapter, UserAdapter } from '../infrastructure';
 
 export class DependencyInjection {
 	public static get UserRepository(): UserRepository {
-		const repository = new UserAdapter();
+		const adapter = new UserAdapter();
 
-		return repository;
+		return adapter;
 	}
 
 	public static get RequestRepository(): RequestRepository {
-		const repository = new RequestAdapter();
+		const adapter = new RequestAdapter();
 
-		return repository;
+		return adapter;
+	}
+
+	public static get GuildRepository(): GuildRepository {
+		const adapter = new GuildAdapter();
+
+		return adapter;
+	}
+
+	public static get GuildMemberRepository(): GuildMemberRepository {
+		const adapter = new GuildMemberAdapter();
+
+		return adapter;
 	}
 }

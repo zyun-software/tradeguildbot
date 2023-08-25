@@ -1,8 +1,6 @@
-import type { UserEntity } from '$lib/server/domain';
 import type { GuardInterface } from './guard';
 
 type GuardsType = GuardInterface[] | [];
-type HandleType = Promise<void | string>;
 
 export abstract class ActionInterace {
 	protected _guards: GuardsType;
@@ -21,8 +19,4 @@ export abstract class ActionInterace {
 
 		return !this._guards.length;
 	}
-
-	public abstract handleExecute(user: UserEntity, response: any): HandleType;
-
-	public async handleAccessDenied(user: UserEntity, response: any): HandleType {}
 }

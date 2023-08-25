@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 body {
-  @apply bg-tg-bg-color;
+	@apply bg-tg-bg-color;
 }
 
 * {
-  @apply text-tg-text-color;
+	@apply text-tg-text-color;
 }
 
 a {
-  @apply text-tg-button-color
+	@apply text-tg-button-color
   hover:underline;
 }
 
 button {
-  @apply bg-tg-button-color
+	@apply bg-tg-button-color
   text-tg-button-text-color
   disabled:cursor-not-allowed
   disabled:bg-tg-secondary-bg-color
@@ -26,7 +26,7 @@ button {
 select,
 textarea,
 input {
-  @apply bg-tg-secondary-bg-color
+	@apply bg-tg-secondary-bg-color
   p-2 rounded
   border
   border-tg-secondary-bg-color

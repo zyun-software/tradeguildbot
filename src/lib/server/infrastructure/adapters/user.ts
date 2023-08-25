@@ -1,7 +1,6 @@
 import { UserEntity, UserRepository, type UserModel } from '$lib/server/domain';
 import { sql } from '../api';
 
-const columns = ['id', 'route', 'data'];
 const table = 'users';
 
 export class UserAdapter extends UserRepository {
@@ -27,7 +26,7 @@ export class UserAdapter extends UserRepository {
 
 	public async findById(id: number): Promise<UserEntity | null> {
 		const models = await sql<UserModel[]>`
-			SELECT ${sql(columns)}
+			SELECT *
 			FROM ${sql(table)}
 			WHERE id = ${id}
 		`;
@@ -37,7 +36,7 @@ export class UserAdapter extends UserRepository {
 		}
 
 		const entity = new UserEntity({
-			model: models[0],
+			model: this._mapper(models[0]),
 			repository: this
 		});
 
@@ -49,9 +48,12 @@ export class UserAdapter extends UserRepository {
 
 		const models = await sql<UserModel[]>`
 			INSERT INTO ${sql(table)}
-				(${sql(columns)})
+				(id, route, data)
 			VALUES
 				(${id}, ${route}, ${data})
+			ON CONFLICT (id) DO UPDATE
+				SET route = EXCLUDED.route,
+						data = EXCLUDED.data
 			RETURNING *
 		`;
 
@@ -59,8 +61,15 @@ export class UserAdapter extends UserRepository {
 			throw new Error('Помилка збереження користувача');
 		}
 
-		const result = new UserEntity({ model: models[0], repository: this });
+		const result = new UserEntity({ model: this._mapper(models[0]), repository: this });
 
 		return result;
+	}
+
+	private _mapper(row: UserModel): UserModel {
+		return {
+			...row,
+			id: parseInt(row.id.toString())
+		};
 	}
 }

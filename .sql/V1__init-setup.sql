@@ -13,7 +13,7 @@ CREATE TABLE guilds (
     active BOOLEAN NOT NULL
 );
 
-INSERT INTO guilds (name, owner_id, active) VALUES ('Орден Троянди Візера', 494209756, TRUE);
+INSERT INTO guilds (id, name, owner_id, active) VALUES (1, 'Орден Троянди Візера', 494209756, TRUE);
 
 CREATE TABLE guild_members (
     id SERIAL PRIMARY KEY,
@@ -22,6 +22,8 @@ CREATE TABLE guild_members (
     name VARCHAR(32) NOT NULL,
     approved BOOLEAN NOT NULL
 );
+
+INSERT INTO guild_members (id, user_id, guild_id, name, approved) VALUES (1, 494209756, 1, 'Ziozyun', TRUE);
 
 CREATE TABLE currencies (
     id SERIAL PRIMARY KEY,

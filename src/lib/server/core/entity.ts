@@ -12,16 +12,13 @@ export abstract class Entity<
 		return this.__model.id;
 	}
 
+	public get _created(): boolean {
+		return this.__created;
+	}
+
 	public constructor(options: { model: TModel; repository: TRepository }) {
 		this.__model = options.model;
 		this.__created = options.model.id !== -1;
 		this.__repository = options.repository;
-	}
-
-	public create(): Promise<Entity<TModel, TRepository>> {
-		const entity = this.__repository.save(this);
-		this.__created = true;
-
-		return entity;
 	}
 }
