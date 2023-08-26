@@ -78,6 +78,24 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 		return result;
 	}
 
+	public async getNotApprovedListByGuildIdAndName(
+		guild_id: number,
+		name: string
+	): Promise<GuildMemberEntity[]> {
+		const lowerCaseName = name.toLowerCase();
+
+		const models = await sql<GuildMemberModel[]>`
+      SELECT *
+      FROM ${sql(table)}
+      WHERE guild_id = ${guild_id} AND LOWER(name) LIKE ${`%${lowerCaseName}%`} AND approved = false
+			ORDER BY name DESC
+    `;
+
+		const entities = this._list(models);
+
+		return entities;
+	}
+
 	public async getListByUserId(id: number): Promise<GuildMemberEntity[]> {
 		const models = await sql<GuildMemberModel[]>`
       SELECT *
@@ -85,9 +103,7 @@ export class GuildMemberAdapter extends GuildMemberRepository {
       WHERE user_id = ${id}
     `;
 
-		const entities = models.map(
-			(model) => new GuildMemberEntity({ model: this._mapper(model), repository: this })
-		);
+		const entities = this._list(models);
 
 		return entities;
 	}
@@ -122,6 +138,15 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 		return result;
 	}
 
+	public async delete(entity: GuildMemberEntity): Promise<void> {
+		const { id } = entity;
+
+		await sql`
+			DELETE FROM ${sql(table)}
+			WHERE id = ${id}
+		`;
+	}
+
 	public async findById(id: number): Promise<GuildMemberEntity | null> {
 		const models = await sql<GuildMemberModel[]>`
       SELECT *
@@ -140,6 +165,14 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 			user_id: parseInt(row.user_id.toString()),
 			guild_id: parseInt(row.guild_id.toString())
 		};
+	}
+
+	private _list(models: GuildMemberModel[]): GuildMemberEntity[] {
+		const entities = models.map(
+			(model) => new GuildMemberEntity({ model: this._mapper(model), repository: this })
+		);
+
+		return entities;
 	}
 
 	private _find(models: GuildMemberModel[]): GuildMemberEntity | null {

@@ -4,6 +4,7 @@
 	export let value: string | number;
 	export let required: boolean = false;
 	export let onInput: (value: any) => void;
+	export let datalist: string | undefined = undefined;
 </script>
 
 <fieldset class="grid grid-cols-2 mb-2">
@@ -14,6 +15,7 @@
 		placeholder={name}
 		bind:value
 		on:input={() => onInput(value)}
+		list={datalist}
 		{required}
 	/>
 </fieldset>

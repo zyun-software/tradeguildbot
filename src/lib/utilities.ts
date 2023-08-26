@@ -11,6 +11,19 @@ export function alertUtility(message: any): void {
 	}
 }
 
+export async function confirmUtility(
+	message: any,
+	callback: (yes?: boolean) => Promise<void> | void
+): Promise<void> {
+	const webApp = window?.Telegram?.WebApp;
+	if (webApp) {
+		webApp.showConfirm(message, callback);
+	} else {
+		const yes = confirm(message);
+		await callback(yes);
+	}
+}
+
 export function hideMainButton(): void {
 	const webApp = window?.Telegram?.WebApp;
 	if (webApp) {

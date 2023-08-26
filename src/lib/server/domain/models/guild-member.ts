@@ -20,7 +20,12 @@ export abstract class GuildMemberRepository
 	): Promise<GuildMemberEntity | null>;
 
 	public abstract getListByUserId(id: number): Promise<GuildMemberEntity[]>;
+	public abstract getNotApprovedListByGuildIdAndName(
+		guild_id: number,
+		name: string
+	): Promise<GuildMemberEntity[]>;
 	public abstract save(entity: GuildMemberEntity): Promise<GuildMemberEntity>;
+	public abstract delete(entity: GuildMemberEntity): Promise<void>;
 }
 
 export class GuildMemberDefaultValue {

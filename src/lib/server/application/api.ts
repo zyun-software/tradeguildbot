@@ -4,8 +4,8 @@ import { findUserByTokenUtility } from './utilities';
 
 export type ApiActionExecuteType = { success: boolean; error: string; response: any };
 
-export abstract class ApiAction extends ActionInterace {
-	public abstract execute(user: UserEntity, data: any): Promise<ApiActionExecuteType>;
+export abstract class ApiAction<TData> extends ActionInterace<TData> {
+	public abstract execute(): Promise<ApiActionExecuteType>;
 }
 
 export abstract class Api {
@@ -13,7 +13,7 @@ export abstract class Api {
 		private _method: string,
 		private _data: any,
 		private _user: UserEntity,
-		private _actions: { [method: string]: ApiAction }
+		protected _actions: { [method: string]: ApiAction<any> } = {}
 	) {
 		if (typeof this._data !== 'object') {
 			this._data = {};
@@ -25,7 +25,7 @@ export abstract class Api {
 			const action = this._actions[this._method];
 			const haveAccess = await action.auditAccess();
 			if (haveAccess) {
-				const result = await action.execute(this._user, this._data);
+				const result = await action.execute();
 				return result;
 			}
 
@@ -73,7 +73,9 @@ export async function executeApi(
 				unauthorized: false
 			};
 		}
-	} catch {
+	} catch (error) {
+		console.log('ApiError', error);
+		
 		result.error = 'Виникла внутрішня помилка сервера';
 	}
 

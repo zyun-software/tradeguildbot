@@ -98,16 +98,14 @@
 	<Hint
 		text="ℹ️ Для того, щоб приєднатися до гільдії, вам необхідно зареєструватися. Для цього вам потрібно подати заявку на вступ."
 	/>
-	<div class="px-2">
-		<Form onSubmit={registerForm.handler}>
-			<Input
-				id="nickname"
-				name="Псевдонім"
-				value={registerForm.data.nickname}
-				required={true}
-				onInput={(value) => (registerForm.data.nickname = value)}
-			/>
-			<button disabled={registerForm.disabled} class="w-full bg-green-600">Подати заявку</button>
-		</Form>
-	</div>
+	<Form onSubmit={registerForm.handler}>
+		<Input
+			id="nickname"
+			name="Псевдонім"
+			value={registerForm.data.nickname}
+			required={true}
+			onInput={(value) => (registerForm.data.nickname = value)}
+		/>
+		<button disabled={registerForm.disabled} class="w-full bg-green-600">Подати заявку</button>
+	</Form>
 {/if}

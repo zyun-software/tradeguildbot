@@ -7,6 +7,7 @@
 	import Menu from '../parts/menu.svelte';
 	import Title from '../parts/title.svelte';
 	import Guild from './guild.svelte';
+	import Statements from './statements.svelte';
 
 	onMount(() => {
 		showBackButton(() => {
@@ -34,7 +35,8 @@
 	buttons={[
 		{
 			emoji: '📄',
-			text: 'Заявки'
+			text: 'Заявки',
+      component: Statements
 		},
 		{
 			emoji: '✍🏻',

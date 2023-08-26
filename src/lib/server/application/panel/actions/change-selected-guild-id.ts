@@ -1,13 +1,9 @@
-import type { UserEntity } from '$lib/server/domain';
-import { ApiAction, type ApiActionExecuteType } from '../api';
+import { ApiAction, type ApiActionExecuteType } from '../../api';
 
-export class ChangeSelectedGuildIdAction extends ApiAction {
-	public async execute(
-		user: UserEntity,
-		data: {
-			guild_id: number;
-		}
-	): Promise<ApiActionExecuteType> {
+export class ChangeSelectedGuildIdAction extends ApiAction<{
+	guild_id: number;
+}> {
+	public async execute(): Promise<ApiActionExecuteType> {
 		const result: {
 			success: boolean;
 			error: string;
@@ -18,15 +14,15 @@ export class ChangeSelectedGuildIdAction extends ApiAction {
 			response: null
 		};
 
-		if (typeof data.guild_id !== 'number') {
+		if (typeof this._data.guild_id !== 'number') {
 			result.error =
 				'Необхідно передати ідентифікатор гільдію, меню якої буде автоматично відкриватися';
 			return result;
 		}
 
-		await user.setData({
-			...user.data,
-			selectedGuildId: data.guild_id
+		await this._user.setData({
+			...this._user.data,
+			selectedGuildId: this._data.guild_id
 		});
 
 		result.success = true;
