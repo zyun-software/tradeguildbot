@@ -3,10 +3,10 @@
 	import type { GuildType } from '$lib/types';
 	import { showBackButton } from '$lib/utilities';
 	import { onMount } from 'svelte';
-	import Hint from '../parts/hint.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Title from '../parts/title.svelte';
 	import Guild from './guild.svelte';
+	import Nickname from './nickname.svelte';
 	import Statements from './statements.svelte';
 
 	onMount(() => {
@@ -29,18 +29,17 @@
 
 <Title text="🎛️ Керування гільдією" />
 
-<Hint text="ℹ️ Ви знаходетеся в меню керування гільдією <b>{guild.name}</b>." />
-
 <Menu
 	buttons={[
 		{
 			emoji: '📄',
 			text: 'Заявки',
-      component: Statements
+			component: Statements
 		},
 		{
 			emoji: '✍🏻',
-			text: 'Псевдонім'
+			text: 'Псевдонім',
+			component: Nickname
 		},
 		{
 			emoji: '💱',

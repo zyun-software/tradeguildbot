@@ -20,6 +20,7 @@ export abstract class GuildMemberRepository
 	): Promise<GuildMemberEntity | null>;
 
 	public abstract getListByUserId(id: number): Promise<GuildMemberEntity[]>;
+	public abstract getApprovedListByGuildId(id: number): Promise<GuildMemberEntity[]>;
 	public abstract getNotApprovedListByGuildIdAndName(
 		guild_id: number,
 		name: string

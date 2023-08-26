@@ -1,9 +1,12 @@
 import type { UserEntity } from '$lib/server/domain';
 import { Api } from '../api';
 import {
+	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
 	FindNotApprovedGuildMembers,
-	RegistrationInGuildAction,ProcessJoiningTheGuildAction
+	GetGuildMemberNicknamesAction,
+	ProcessJoiningTheGuildAction,
+	RegistrationInGuildAction
 } from './actions';
 import { GuildMasterGuard } from './guards';
 
@@ -16,12 +19,18 @@ export class Panel extends Api {
 		};
 
 		this._actions = {
+			'change-guild-member-nickname': new ChangeGuildMemberNicknameAction(
+				[guard.guildMaster],
+				user,
+				data
+			),
 			'change-selected-guild-id': new ChangeSelectedGuildIdAction([], user, data),
 			'find-not-approved-guild-members': new FindNotApprovedGuildMembers(
 				[guard.guildMaster],
 				user,
 				data
 			),
+			'get-guild-member-nicknames': new GetGuildMemberNicknamesAction([], user, data),
 			'process-joining-the-guild': new ProcessJoiningTheGuildAction(
 				[guard.guildMaster],
 				user,

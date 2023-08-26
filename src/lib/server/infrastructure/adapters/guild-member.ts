@@ -108,6 +108,18 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 		return entities;
 	}
 
+	public async getApprovedListByGuildId(id: number): Promise<GuildMemberEntity[]> {
+		const models = await sql<GuildMemberModel[]>`
+      SELECT *
+      FROM ${sql(table)}
+      WHERE guild_id = ${id} AND approved = true
+    `;
+
+		const entities = this._list(models);
+
+		return entities;
+	}
+
 	public async save(entity: GuildMemberEntity): Promise<GuildMemberEntity> {
 		const { id, user_id, guild_id, name, approved, _created } = entity;
 
