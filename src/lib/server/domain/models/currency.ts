@@ -1,11 +1,17 @@
-import { Entity, type RepositorySave } from '$lib/server/core';
+import { Entity, RepositoryId, type RepositorySave } from '$lib/server/core';
 
-export abstract class CurrencyRepository implements RepositorySave<CurrencyEntity> {
+export abstract class CurrencyRepository
+	extends RepositoryId<CurrencyEntity>
+	implements RepositorySave<CurrencyEntity>
+{
 	public abstract updateGuildId(entity: CurrencyEntity): Promise<void>;
 	public abstract updateCode(entity: CurrencyEntity): Promise<void>;
 	public abstract updateName(entity: CurrencyEntity): Promise<void>;
 
+	public abstract findByCode(code: string): Promise<CurrencyEntity | null>;
+	public abstract getListByGuildId(id: number): Promise<CurrencyEntity[]>;
 	public abstract save(entity: CurrencyEntity): Promise<CurrencyEntity>;
+	public abstract delete(entity: CurrencyEntity): Promise<void>;
 }
 
 export class CurrencyDefaultValue {
@@ -19,6 +25,7 @@ export type CurrencyModel = {
 	guild_id: number;
 	code: string;
 	name: string;
+	capital: number;
 };
 
 export class CurrencyEntity extends Entity<CurrencyModel, CurrencyRepository> {
@@ -59,5 +66,9 @@ export class CurrencyEntity extends Entity<CurrencyModel, CurrencyRepository> {
 		}
 
 		return this;
+	}
+
+	public get capital(): number {
+		return this.__model.capital;
 	}
 }

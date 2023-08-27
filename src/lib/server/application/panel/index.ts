@@ -4,18 +4,21 @@ import {
 	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
 	FindNotApprovedGuildMembers,
+	GetGuildCurrenciesAction,
 	GetGuildMemberNicknamesAction,
+	ProcessGuildCurrencyAction,
 	ProcessJoiningTheGuildAction,
 	RegistrationInGuildAction
 } from './actions';
-import { GuildMasterGuard } from './guards';
+import { GuildMasterGuard, GuildMemberGuard } from './guards';
 
 export class Panel extends Api {
 	public constructor(method: string, data: any, user: UserEntity) {
 		super(method, data, user);
 
 		const guard = {
-			guildMaster: new GuildMasterGuard(user, data)
+			guildMaster: new GuildMasterGuard(user, data),
+			guildMember: new GuildMemberGuard(user, data)
 		};
 
 		this._actions = {
@@ -30,7 +33,13 @@ export class Panel extends Api {
 				user,
 				data
 			),
-			'get-guild-member-nicknames': new GetGuildMemberNicknamesAction([], user, data),
+			'get-guild-currencies': new GetGuildCurrenciesAction([guard.guildMember], user, data),
+			'get-guild-member-nicknames': new GetGuildMemberNicknamesAction(
+				[guard.guildMember],
+				user,
+				data
+			),
+			'process-guild-currency': new ProcessGuildCurrencyAction([guard.guildMaster], user, data),
 			'process-joining-the-guild': new ProcessJoiningTheGuildAction(
 				[guard.guildMaster],
 				user,

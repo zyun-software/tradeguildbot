@@ -29,8 +29,9 @@ INSERT INTO guild_members (user_id, guild_id, name, approved) VALUES (494209756,
 CREATE TABLE currencies (
     id SERIAL PRIMARY KEY,
     guild_id BIGINT REFERENCES guilds(id) ON DELETE CASCADE,
-    code VARCHAR(10) UNIQUE NOT NULL,
-    name VARCHAR(32) NOT NULL
+    code VARCHAR(10) NOT NULL,
+    name VARCHAR(32) NOT NULL,
+    CONSTRAINT uc_guild_code UNIQUE (guild_id, code)
 );
 
 CREATE TABLE accounts (
@@ -38,7 +39,8 @@ CREATE TABLE accounts (
     guild_member_id BIGINT REFERENCES guild_members(id) ON DELETE CASCADE,
     currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
     balance INTEGER NOT NULL DEFAULT 0,
-    reserve INTEGER NOT NULL DEFAULT 0
+    reserve INTEGER NOT NULL DEFAULT 0,
+    CONSTRAINT uc_member_currency UNIQUE (guild_member_id, currency_id)
 );
 
 CREATE TABLE exchange_proposals (

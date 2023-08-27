@@ -16,16 +16,6 @@ export class GetGuildMemberNicknamesAction extends ApiAction<{
 			response: null
 		};
 
-		const me = await guildMemberRepository.findByUserIdAndGuildId(
-			this._user.id,
-			this._data.guild_id
-		);
-
-		if (!me) {
-			result.error = 'Необхідно бути членом гільдії';
-			return result;
-		}
-
 		const list = await guildMemberRepository.getApprovedListByGuildId(this._data.guild_id);
 
 		result.success = true;

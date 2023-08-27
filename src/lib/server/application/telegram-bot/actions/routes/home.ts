@@ -3,29 +3,23 @@ import { DependencyInjection, createTokenUtility } from '$lib/server/application
 import type { UserEntity } from '$lib/server/domain';
 import { TelegramBotAction } from '../../interfaces';
 
-export class HomeRoute extends TelegramBotAction {
-	private _telegram;
-
-	public constructor() {
-		super();
-		this._telegram = DependencyInjection.RequestRepository.telegram;
-	}
-
-	public async handleExecute(user: UserEntity, response: any): Promise<string | void> {
+export class HomeRoute extends TelegramBotAction<any> {
+	public async handleExecute(user: UserEntity): Promise<string | void> {
+		const telegram = DependencyInjection.RequestRepository.telegram;
 		const button = {
 			donate: '💸 Подякувати'
 		};
 
-		switch (response.message.text) {
+		switch (this._data.message.text) {
 			case button.donate:
-				return await this._telegram('sendMessage', {
+				return await telegram('sendMessage', {
 					chat_id: user.id,
 					text: `[Посилання для пожертв](${DONATE_URL})`
 				});
 			default:
 				const token = createTokenUtility(user.id, 'panel');
 
-				await this._telegram('setChatMenuButton', {
+				await telegram('setChatMenuButton', {
 					chat_id: user.id,
 					menu_button: {
 						type: 'web_app',
@@ -36,7 +30,7 @@ export class HomeRoute extends TelegramBotAction {
 					}
 				});
 
-				await this._telegram('sendMessage', {
+				await telegram('sendMessage', {
 					chat_id: user.id,
 					text: '💡 Для того щоб отримати повний доступ до усіх можливостей, натисніть на кнопку *Панель*',
 					reply_markup: {

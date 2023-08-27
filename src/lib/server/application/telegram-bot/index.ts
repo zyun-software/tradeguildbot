@@ -8,7 +8,7 @@ import { DependencyInjection } from '../dependency-injection';
 import { HomeRoute } from './actions';
 import type { TelegramBotAction } from './interfaces';
 
-type ActionsType = { [k: string]: TelegramBotAction };
+type ActionsType = { [k: string]: TelegramBotAction<any> };
 
 export class TelegramBot {
 	private _request: any;
@@ -24,7 +24,14 @@ export class TelegramBot {
 		this._requestRepository = DependencyInjection.RequestRepository;
 
 		this._routes = {
-			home: new HomeRoute()
+			home: new HomeRoute(
+				[],
+				new UserEntity({
+					model: { id: -1, route: UserDefaultValue.route, data: UserDefaultValue.data },
+					repository: this._userRepository
+				}),
+				request
+			)
 		};
 	}
 
@@ -64,12 +71,12 @@ export class TelegramBot {
 			const action = actions[name];
 			const haveAccess = await action.auditAccess();
 			if (haveAccess) {
-				const result = await action.handleExecute(user, this._request);
+				const result = await action.handleExecute(user);
 				if (updateRoute && typeof result === 'string') {
 					await redirect(result);
 				}
 			} else {
-				await action.handleAccessDenied(user, this._request);
+				await action.handleAccessDenied(user);
 			}
 		} else if (updateRoute) {
 			await redirect('home');

@@ -3,8 +3,8 @@ import type { UserEntity } from '$lib/server/domain';
 
 type HandleType = Promise<void | string>;
 
-export abstract class TelegramBotAction extends ActionInterace {
-	public abstract handleExecute(user: UserEntity, response: any): HandleType;
+export abstract class TelegramBotAction<TResponse> extends ActionInterace<TResponse> {
+	public abstract handleExecute(user: UserEntity): HandleType;
 
-	public async handleAccessDenied(user: UserEntity, response: any): HandleType {}
+	public async handleAccessDenied(user: UserEntity): HandleType {}
 }

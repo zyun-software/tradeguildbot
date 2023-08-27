@@ -51,6 +51,7 @@ export function showMainButton(text: string, handler: HandlerType): void {
 		}
 		mainButtonHandler = handler;
 		MainButton.onClick(handler);
+		MainButton.show();
 	}
 }
 

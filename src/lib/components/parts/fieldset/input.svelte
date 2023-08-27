@@ -3,7 +3,8 @@
 	export let name: string;
 	export let value: string | number;
 	export let required: boolean = false;
-	export let onInput: (value: any) => void;
+	export let readonly: boolean = false;
+	export let onInput: ((value: any) => void) | undefined = undefined;
 	export let datalist: string | undefined = undefined;
 </script>
 
@@ -14,8 +15,9 @@
 		type="search"
 		placeholder={name}
 		bind:value
-		on:input={() => onInput(value)}
+		on:input={() => onInput && onInput(value)}
 		list={datalist}
 		{required}
+		{readonly}
 	/>
 </fieldset>

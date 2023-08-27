@@ -3,8 +3,10 @@
 	import type { GuildType } from '$lib/types';
 	import { showBackButton } from '$lib/utilities';
 	import { onMount } from 'svelte';
+	import Hint from '../parts/hint.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Title from '../parts/title.svelte';
+	import Currencies from './currencies.svelte';
 	import Guild from './guild.svelte';
 	import Nickname from './nickname.svelte';
 	import Statements from './statements.svelte';
@@ -29,6 +31,8 @@
 
 <Title text="🎛️ Керування гільдією" />
 
+<Hint text="ℹ️ Це меню керування гільдією" />
+
 <Menu
 	buttons={[
 		{
@@ -43,7 +47,8 @@
 		},
 		{
 			emoji: '💱',
-			text: 'Валюта'
+			text: 'Валюта',
+			component: Currencies
 		},
 		{
 			emoji: '💰',
