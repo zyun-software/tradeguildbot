@@ -32,7 +32,7 @@ export class UserAdapter extends UserRepository {
 		`;
 
 		const result = this._find(models);
-		
+
 		return result;
 	}
 
@@ -50,11 +50,11 @@ export class UserAdapter extends UserRepository {
 			RETURNING *
 		`;
 
-		if (!models.length) {
+		const result = this._find(models);
+
+		if (!result) {
 			throw new Error('Помилка збереження користувача');
 		}
-
-		const result = new UserEntity({ model: this._mapper(models[0]), repository: this });
 
 		return result;
 	}

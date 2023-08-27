@@ -79,26 +79,44 @@ export class CurrencyAdapter extends CurrencyRepository {
 	public async save(entity: CurrencyEntity): Promise<CurrencyEntity> {
 		const { id, guild_id, code, name, _created } = entity;
 
-		const query = _created
+		const models = await (_created
 			? sql<CurrencyModel[]>`
-				UPDATE ${sql(table)}
-				SET guild_id = ${guild_id}, code = ${code}, name = ${name}
-				WHERE id = ${id}
-				RETURNING *`
+				WITH updated_rows AS (
+					UPDATE ${sql(table)}
+					SET guild_id = ${guild_id}, code = ${code}, name = ${name}
+					WHERE id = ${id}
+					RETURNING *
+				)
+				SELECT ur.*, COALESCE(c.capital, 0) AS capital
+				FROM updated_rows ur
+				LEFT JOIN (
+					SELECT currency_id, CAST(SUM(a.reserve + a.balance) AS INTEGER) AS capital
+					FROM accounts a
+					GROUP BY currency_id
+				) c ON ur.id = c.currency_id
+			`
 			: sql<CurrencyModel[]>`
-				INSERT INTO ${sql(table)}
-				(guild_id, code, name)
-				VALUES
-				(${guild_id}, ${code}, ${name})
-				RETURNING *`;
+				WITH inserted_rows AS (
+					INSERT INTO ${sql(table)}
+					(guild_id, code, name)
+					VALUES
+					(${guild_id}, ${code}, ${name})
+					RETURNING *
+				)
+				SELECT ir.*, COALESCE(c.capital, 0) AS capital
+				FROM inserted_rows ir
+				LEFT JOIN (
+					SELECT currency_id, CAST(SUM(a.reserve + a.balance) AS INTEGER) AS capital
+					FROM accounts a
+					GROUP BY currency_id
+				) c ON ir.id = c.currency_id
+			`);
 
-		const models = await query;
+		const result = this._find(models);
 
-		if (!models.length) {
+		if (!result) {
 			throw new Error('Помилка збереження валюти');
 		}
-
-		const result = new CurrencyEntity({ model: this._mapper(models[0]), repository: this });
 
 		return result;
 	}

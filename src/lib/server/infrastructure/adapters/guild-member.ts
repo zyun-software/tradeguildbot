@@ -123,7 +123,7 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 	public async save(entity: GuildMemberEntity): Promise<GuildMemberEntity> {
 		const { id, user_id, guild_id, name, approved, _created } = entity;
 
-		const query = _created
+		const models = await (_created
 			? sql<GuildMemberModel[]>`
 				UPDATE ${sql(table)}
 				SET user_id = ${user_id},
@@ -137,15 +137,13 @@ export class GuildMemberAdapter extends GuildMemberRepository {
           (user_id, guild_id, name, approved)
         VALUES
           (${user_id}, ${guild_id}, ${name}, ${approved})
-        RETURNING *`;
+        RETURNING *`);
 
-		const models = await query;
+		const result = this._find(models);
 
-		if (!models.length) {
+		if (!result) {
 			throw new Error('Помилка збереження учасника гільдії');
 		}
-
-		const result = new GuildMemberEntity({ model: this._mapper(models[0]), repository: this });
 
 		return result;
 	}

@@ -70,7 +70,7 @@ export class GuildAdapter extends GuildRepository {
 	public async save(entity: GuildEntity): Promise<GuildEntity> {
 		const { id, name, owner_id, active, _created } = entity;
 
-		const query = _created
+		const models = await (_created
 			? sql<GuildModel[]>`
 					UPDATE ${sql(table)}
 					SET name = ${name},
@@ -85,15 +85,13 @@ export class GuildAdapter extends GuildRepository {
 				VALUES
 					(${name}, ${owner_id}, ${active})
 				RETURNING *
-			`;
+			`);
 
-		const models = await query;
+		const result = this._find(models);
 
-		if (!models.length) {
+		if (!result) {
 			throw new Error('Помилка збереження гільдії');
 		}
-
-		const result = new GuildEntity({ model: this._mapper(models[0]), repository: this });
 
 		return result;
 	}
