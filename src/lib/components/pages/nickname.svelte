@@ -65,7 +65,7 @@
 <Form {onSubmit}>
 	<Input
 		id="old-nickname"
-		name="Попередній"
+		name="🏷️ Попередній"
 		value={nickname.old}
 		required={true}
 		datalist="nicknames"
@@ -75,7 +75,7 @@
 	/>
 	<Input
 		id="new-nickname"
-		name="Новий"
+		name="🆕 Новий"
 		value={nickname.new}
 		required={true}
 		onInput={(value) => {

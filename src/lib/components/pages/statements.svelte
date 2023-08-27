@@ -81,7 +81,7 @@
 />
 
 <Form onSubmit={loadList}>
-	<Input id="nickname" name="Псевдонім" value={name} onInput={(value) => (name = value)} />
+	<Input id="nickname" name="🏷️ Псевдонім" value={name} onInput={(value) => (name = value)} />
 	<button class="w-full" disabled={disabledFilter}>Фільтрувати</button>
 </Form>
 
@@ -90,7 +90,7 @@
 		{#each list as { id, name }}
 			<div class="rounded p-2 bg-tg-secondary-bg-color mb-2">
 				<div class="grid grid-cols-2 gap-2 mb-2">
-					<div>Псевдонім</div>
+					<div>🏷️ Псевдонім</div>
 					<div>{name}</div>
 				</div>
 				<div class="grid grid-cols-2 gap-2">

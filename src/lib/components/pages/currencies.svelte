@@ -92,7 +92,7 @@
 	>
 		<Input
 			id="add-code"
-			name="Код"
+			name="🎫 Код"
 			value={currency.code}
 			required={true}
 			onInput={(value) => {
@@ -101,7 +101,7 @@
 		/>
 		<Input
 			id="add-name"
-			name="Назва"
+			name="🏷 Назва"
 			value={currency.name}
 			required={true}
 			onInput={(value) => {
@@ -117,7 +117,7 @@
 		<div class="bg-tg-secondary-bg-color rounded p-2">
 			<Input
 				id="save-code-{id}"
-				name="Код"
+				name="🎫 Код"
 				value={code}
 				required={true}
 				onInput={(value) => {
@@ -126,7 +126,7 @@
 			/>
 			<Input
 				id="save-name-{id}"
-				name="Назва"
+				name="🏷 Назва"
 				value={name}
 				required={true}
 				onInput={(value) => {
@@ -135,7 +135,7 @@
 			/>
 			<Input
 				id="save-capital-{id}"
-				name="Капітал"
+				name="💰 Капітал"
 				value={capital}
 				required={true}
 				readonly={true}
