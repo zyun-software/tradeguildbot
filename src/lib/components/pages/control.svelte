@@ -1,68 +1,55 @@
 <script lang="ts">
-	import { guilds, pageComponent, selectedGuildId } from '$lib/stores';
 	import type { GuildType } from '$lib/types';
-	import { showBackButton } from '$lib/utilities';
-	import { onMount } from 'svelte';
-	import Hint from '../parts/hint.svelte';
+	import GuildPage from '../parts/guild-page.svelte';
 	import Menu from '../parts/menu.svelte';
-	import Title from '../parts/title.svelte';
 	import Currencies from './currencies.svelte';
 	import Guild from './guild.svelte';
 	import Money from './money.svelte';
 	import Nickname from './nickname.svelte';
 	import Statements from './statements.svelte';
 
-	onMount(() => {
-		showBackButton(() => {
-			pageComponent.set(Guild);
-		});
-	});
-
 	let guild: GuildType;
-	const find = ($guilds ?? []).find((guild) => guild.id === $selectedGuildId);
-
-	if (find) {
-		guild = find;
-
-		if (!guild.isOwner) {
-			pageComponent.set(Guild);
-		}
-	}
 </script>
 
-<Title text="🎛️ Керування гільдією" />
-
-<Hint text="ℹ️ Це меню керування гільдією" />
-
-<Menu
-	buttons={[
-		{
-			emoji: '📄',
-			text: 'Заявки',
-			component: Statements
-		},
-		{
-			emoji: '✍🏻',
-			text: 'Псевдонім',
-			component: Nickname
-		},
-		{
-			emoji: '💱',
-			text: 'Валюта',
-			component: Currencies
-		},
-		{
-			emoji: '💰',
-			text: 'Кошти',
-			component: Money
-		},
-		{
-			emoji: '🏷️',
-			text: 'Ціни'
-		},
-		{
-			emoji: '🗑️',
-			text: 'Вайп'
-		}
-	]}
-/>
+<GuildPage
+	title="🎛️ Керування гільдією"
+	hint="ℹ️ Це меню керування гільдією"
+	backToPage={Guild}
+	needNicknames={false}
+	onGetGuild={(value) => {
+		guild = value;
+	}}
+>
+	<Menu
+		buttons={[
+			{
+				emoji: '📄',
+				text: 'Заявки',
+				component: Statements
+			},
+			{
+				emoji: '✍🏻',
+				text: 'Псевдонім',
+				component: Nickname
+			},
+			{
+				emoji: '💱',
+				text: 'Валюта',
+				component: Currencies
+			},
+			{
+				emoji: '💰',
+				text: 'Кошти',
+				component: Money
+			},
+			{
+				emoji: '🏷️',
+				text: 'Ціни'
+			},
+			{
+				emoji: '🗑️',
+				text: 'Вайп'
+			}
+		]}
+	/>
+</GuildPage>

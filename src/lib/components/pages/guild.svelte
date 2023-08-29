@@ -10,6 +10,7 @@
 	import Title from '../parts/title.svelte';
 	import Control from './control.svelte';
 	import Guilds from './guilds.svelte';
+	import Services from './services.svelte';
 
 	onMount(() => {
 		showBackButton(() => {
@@ -49,7 +50,8 @@
 				},
 				{
 					emoji: '⚡',
-					text: 'Послуги'
+					text: 'Послуги',
+					component: Services
 				},
 				{
 					emoji: '🤖',
@@ -85,11 +87,7 @@
 <Title text={`🏛️ ${guild.name}`} />
 
 {#if guild.isMember}
-	<Hint
-		text="👋 Вітаю вас{guild.isOwner
-			? ' гільдмайстре'
-			: ''}, <b>{guild.nickname}</b>!"
-	/>
+	<Hint text="👋 Вітаю вас{guild.isOwner ? ' гільдмайстре' : ''}, <b>{guild.nickname}</b>!" />
 
 	<Menu {buttons} />
 {:else if guild.nickname}

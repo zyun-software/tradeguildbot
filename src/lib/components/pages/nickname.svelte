@@ -1,32 +1,12 @@
 <script lang="ts">
-	import { guilds, pageComponent, selectedGuildId } from '$lib/stores';
 	import type { GuildType } from '$lib/types';
-	import { alertUtility, confirmUtility, requestUtility, showBackButton } from '$lib/utilities';
-	import { onMount } from 'svelte';
+	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
-	import Hint from '../parts/hint.svelte';
-	import NicknamesList from '../parts/nicknames-list.svelte';
-	import Title from '../parts/title.svelte';
+	import GuildPage from '../parts/guild-page.svelte';
 	import Control from './control.svelte';
-	import Guild from './guild.svelte';
-
-	onMount(() => {
-		showBackButton(() => {
-			pageComponent.set(Control);
-		});
-	});
 
 	let guild: GuildType;
-	const find = ($guilds ?? []).find((guild) => guild.id === $selectedGuildId);
-
-	if (find) {
-		guild = find;
-
-		if (!guild.isOwner) {
-			pageComponent.set(Guild);
-		}
-	}
 
 	let disabled: boolean = false;
 
@@ -56,31 +36,35 @@
 	};
 </script>
 
-<Title text="✍🏻 Редагування псевдоніма" />
-
-<Hint text="ℹ️ Тут можна відредагувати псевдонім учасника гільдії" />
-
-<NicknamesList guild_id={guild.id} />
-
-<Form {onSubmit}>
-	<Input
-		id="old-nickname"
-		name="🏷️ Попередній"
-		value={nickname.old}
-		required={true}
-		datalist="nicknames"
-		onInput={(value) => {
-			nickname.old = value;
-		}}
-	/>
-	<Input
-		id="new-nickname"
-		name="🆕 Новий"
-		value={nickname.new}
-		required={true}
-		onInput={(value) => {
-			nickname.new = value;
-		}}
-	/>
-	<button {disabled} class="w-full">Змінити</button>
-</Form>
+<GuildPage
+	title="✍🏻 Редагування псевдоніма"
+	hint="ℹ️ Тут можна відредагувати псевдонім учасника гільдії"
+	backToPage={Control}
+	needNicknames={true}
+	onGetGuild={(value) => {
+		guild = value;
+	}}
+>
+	<Form {onSubmit}>
+		<Input
+			id="old-nickname"
+			name="🏷️ Попередній"
+			value={nickname.old}
+			required={true}
+			datalist="nicknames"
+			onInput={(value) => {
+				nickname.old = value;
+			}}
+		/>
+		<Input
+			id="new-nickname"
+			name="🆕 Новий"
+			value={nickname.new}
+			required={true}
+			onInput={(value) => {
+				nickname.new = value;
+			}}
+		/>
+		<button {disabled} class="w-full">Змінити</button>
+	</Form>
+</GuildPage>

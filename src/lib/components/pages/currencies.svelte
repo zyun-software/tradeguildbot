@@ -1,31 +1,12 @@
 <script lang="ts">
-	import { guilds, pageComponent, selectedGuildId } from '$lib/stores';
 	import type { GuildType } from '$lib/types';
-	import { alertUtility, requestUtility, showBackButton } from '$lib/utilities';
-	import { onMount } from 'svelte';
+	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
-	import Hint from '../parts/hint.svelte';
-	import Title from '../parts/title.svelte';
+	import GuildPage from '../parts/guild-page.svelte';
 	import Control from './control.svelte';
-	import Guild from './guild.svelte';
-
-	onMount(() => {
-		showBackButton(() => {
-			pageComponent.set(Control);
-		});
-	});
 
 	let guild: GuildType;
-	const find = ($guilds ?? []).find((guild) => guild.id === $selectedGuildId);
-
-	if (find) {
-		guild = find;
-
-		if (!guild.isOwner) {
-			pageComponent.set(Guild);
-		}
-	}
 
 	type CurrencyType = {
 		id: number;
@@ -44,8 +25,6 @@
 			currencies = response;
 		}
 	};
-
-	loadList();
 
 	let disabled: boolean = false;
 
@@ -78,90 +57,98 @@
 	};
 </script>
 
-<Title text="💱 Редагування Валют" />
-
-<Hint text="ℹ️ Тут можна відредагувати валюти" />
-<div class="mb-4">
-	<Form
-		onSubmit={() =>
-			process({
-				action: 'add',
-				clear: true,
-				...currency
-			})}
-	>
-		<Input
-			id="add-code"
-			name="🎫 Код"
-			value={currency.code}
-			required={true}
-			onInput={(value) => {
-				currency.code = value;
-			}}
-		/>
-		<Input
-			id="add-name"
-			name="🏷 Назва"
-			value={currency.name}
-			required={true}
-			onInput={(value) => {
-				currency.name = value;
-			}}
-		/>
-		<button {disabled} class="w-full">Додати</button>
-	</Form>
-</div>
-
-{#each currencies as { id, code, name, capital }}
-	<div class="px-4 mb-2">
-		<div class="bg-tg-secondary-bg-color rounded p-2">
+<GuildPage
+	title="💱 Редагування Валют"
+	hint="ℹ️ Тут можна відредагувати валюти"
+	backToPage={Control}
+	needNicknames={false}
+	onGetGuild={(value) => {
+		guild = value;
+		loadList();
+	}}
+>
+	<div class="mb-4">
+		<Form
+			onSubmit={() =>
+				process({
+					action: 'add',
+					clear: true,
+					...currency
+				})}
+		>
 			<Input
-				id="save-code-{id}"
+				id="add-code"
 				name="🎫 Код"
-				value={code}
+				value={currency.code}
 				required={true}
 				onInput={(value) => {
-					code = value;
+					currency.code = value;
 				}}
 			/>
 			<Input
-				id="save-name-{id}"
+				id="add-name"
 				name="🏷 Назва"
-				value={name}
+				value={currency.name}
 				required={true}
 				onInput={(value) => {
-					name = value;
+					currency.name = value;
 				}}
 			/>
-			<Input
-				id="save-capital-{id}"
-				name="💰 Капітал"
-				value={capital}
-				required={true}
-				readonly={true}
-			/>
-			<div class="grid grid-cols-2 gap-2">
-				<button
-					on:click={() =>
-						process({
-							action: 'save',
-							id,
-							code,
-							name
-						})}
-					{disabled}
-					class="bg-green-500">Редагувати</button
-				>
-				<button
-					on:click={() =>
-						process({
-							action: 'delete',
-							id
-						})}
-					{disabled}
-					class="bg-red-500">Видалити</button
-				>
+			<button {disabled} class="w-full">Додати</button>
+		</Form>
+	</div>
+
+	{#each currencies as { id, code, name, capital }}
+		<div class="px-4 mb-2">
+			<div class="bg-tg-secondary-bg-color rounded p-2">
+				<Input
+					id="save-code-{id}"
+					name="🎫 Код"
+					value={code}
+					required={true}
+					onInput={(value) => {
+						code = value;
+					}}
+				/>
+				<Input
+					id="save-name-{id}"
+					name="🏷 Назва"
+					value={name}
+					required={true}
+					onInput={(value) => {
+						name = value;
+					}}
+				/>
+				<Input
+					id="save-capital-{id}"
+					name="💰 Капітал"
+					value={capital}
+					required={true}
+					readonly={true}
+				/>
+				<div class="grid grid-cols-2 gap-2">
+					<button
+						on:click={() =>
+							process({
+								action: 'save',
+								id,
+								code,
+								name
+							})}
+						{disabled}
+						class="bg-green-500">Редагувати</button
+					>
+					<button
+						on:click={() =>
+							process({
+								action: 'delete',
+								id
+							})}
+						{disabled}
+						class="bg-red-500">Видалити</button
+					>
+				</div>
 			</div>
 		</div>
-	</div>
-{/each}
+	{/each}
+</GuildPage>

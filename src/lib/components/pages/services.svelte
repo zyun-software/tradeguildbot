@@ -1,0 +1,31 @@
+<script lang="ts">
+	import type { GuildType } from '$lib/types';
+	import GuildPage from '../parts/guild-page.svelte';
+	import Menu from '../parts/menu.svelte';
+	import Guild from './guild.svelte';
+
+	let guild: GuildType;
+</script>
+
+<GuildPage
+	title="⚡ Послуги гільдії"
+	hint="ℹ️ Тут відображені послуги гільдії"
+	backToPage={Guild}
+	needNicknames={false}
+	onGetGuild={(value) => {
+		guild = value;
+	}}
+>
+	<Menu
+		buttons={[
+			{
+				emoji: '📥',
+				text: 'Внести кошти'
+			},
+			{
+				emoji: '📤',
+				text: 'Отримати кошти'
+			}
+		]}
+	/>
+</GuildPage>

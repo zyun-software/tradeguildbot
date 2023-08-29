@@ -1,16 +1,12 @@
 <script lang="ts">
-	import { guilds, pageComponent, selectedGuildId } from '$lib/stores';
 	import type { GuildType } from '$lib/types';
-	import { alertUtility, confirmUtility, requestUtility, showBackButton } from '$lib/utilities';
+	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
 	import { onMount } from 'svelte';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
 	import Form from '../parts/form.svelte';
-	import Hint from '../parts/hint.svelte';
-	import NicknamesList from '../parts/nicknames-list.svelte';
-	import Title from '../parts/title.svelte';
+	import GuildPage from '../parts/guild-page.svelte';
 	import Control from './control.svelte';
-	import Guild from './guild.svelte';
 
 	type CurrencyType = {
 		id: number;
@@ -21,10 +17,6 @@
 	let currencies: CurrencyType[] = [];
 
 	onMount(async () => {
-		showBackButton(() => {
-			pageComponent.set(Control);
-		});
-
 		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
 			guild_id: guild.id
 		});
@@ -43,15 +35,6 @@
 	});
 
 	let guild: GuildType;
-	const find = ($guilds ?? []).find((guild) => guild.id === $selectedGuildId);
-
-	if (find) {
-		guild = find;
-
-		if (!guild.isOwner) {
-			pageComponent.set(Guild);
-		}
-	}
 
 	let disabled: boolean = false;
 
@@ -112,77 +95,81 @@
 	};
 </script>
 
-<Title text="💰 Керування коштами" />
+<GuildPage
+	title="💰 Керування коштами"
+	hint="ℹ️ Тут можна керувати коштами учасника гільдії"
+	backToPage={Control}
+	needNicknames={true}
+	onGetGuild={(value) => {
+		guild = value;
+	}}
+>
+	<Form onSubmit={onSearchHandler}>
+		<Input
+			id="nickname"
+			name="🏷️ Псевдонім"
+			value={account.nickname}
+			required={true}
+			datalist="nicknames"
+			onInput={(value) => {
+				account.nickname = value;
+				accountResponse = undefined;
+			}}
+		/>
+		<Select
+			id="currency"
+			name="💱 Валюта"
+			onChange={(value) => {
+				account.currency_id = value;
+				accountResponse = undefined;
+			}}
+			selected={account.currency_id}
+			{options}
+		/>
+		<button {disabled} class="w-full">Пошук</button>
+	</Form>
 
-<Hint text="ℹ️ Тут можна керувати коштами учасника гільдії" />
-
-<NicknamesList guild_id={guild.id} />
-
-<Form onSubmit={onSearchHandler}>
-	<Input
-		id="nickname"
-		name="🏷️ Псевдонім"
-		value={account.nickname}
-		required={true}
-		datalist="nicknames"
-		onInput={(value) => {
-			account.nickname = value;
-			accountResponse = undefined;
-		}}
-	/>
-	<Select
-		id="currency"
-		name="💱 Валюта"
-		onChange={(value) => {
-			account.currency_id = value;
-			accountResponse = undefined;
-		}}
-		selected={account.currency_id}
-		{options}
-	/>
-	<button {disabled} class="w-full">Пошук</button>
-</Form>
-
-{#if accountResponse}
-	<div class="mt-4 px-4">
-		<div class="rounded p-2 bg-tg-secondary-bg-color mb-4">
-			<div class="grid grid-cols-2 gap-2 mb-2">
-				<div>🏷️ Псевдонім</div>
-				<div>{accountResponse.name}</div>
-			</div>
-			<div class="grid grid-cols-2 gap-2 mb-2">
-				<div>💱 Валюта</div>
-				<div>{accountResponse.currency.name}</div>
-			</div>
-			<div class="grid grid-cols-2 gap-2 mb-2">
-				<div>💰 Сума</div>
-				<div>
-					{accountResponse.balance + accountResponse.reserve} ({accountResponse.balance} / {accountResponse.reserve})
-					{accountResponse.currency.code}
-				</div>
-			</div>
-		</div>
-		{#if accountResponse.moneyRequest}
-			<div class="rounded p-2 bg-tg-secondary-bg-color mb-2">
+	{#if accountResponse}
+		<div class="mt-4 px-4">
+			<div class="rounded p-2 bg-tg-secondary-bg-color mb-4">
 				<div class="grid grid-cols-2 gap-2 mb-2">
-					<div>🔁 Тип</div>
-					<div>
-						{accountResponse.moneyRequest.type === 'introduction' ? 'Внесення' : 'Отримання'} коштів
-					</div>
+					<div>🏷️ Псевдонім</div>
+					<div>{accountResponse.name}</div>
+				</div>
+				<div class="grid grid-cols-2 gap-2 mb-2">
+					<div>💱 Валюта</div>
+					<div>{accountResponse.currency.name}</div>
 				</div>
 				<div class="grid grid-cols-2 gap-2 mb-2">
 					<div>💰 Сума</div>
-					<div>{accountResponse.moneyRequest.amount} {accountResponse.currency.code}</div>
-				</div>
-				<div class="grid grid-cols-2 gap-2">
-					<button on:click={() => processMoneyRequest('approve')} {disabled} class="bg-green-500"
-						>Схвалити</button
-					>
-					<button on:click={() => processMoneyRequest('reject')} {disabled} class="bg-red-500"
-						>Відхилити</button
-					>
+					<div>
+						{accountResponse.balance + accountResponse.reserve} ({accountResponse.balance} / {accountResponse.reserve})
+						{accountResponse.currency.code}
+					</div>
 				</div>
 			</div>
-		{/if}
-	</div>
-{/if}
+			{#if accountResponse.moneyRequest}
+				<div class="rounded p-2 bg-tg-secondary-bg-color mb-2">
+					<div class="grid grid-cols-2 gap-2 mb-2">
+						<div>🔁 Тип</div>
+						<div>
+							{accountResponse.moneyRequest.type === 'introduction' ? 'Внесення' : 'Отримання'} коштів
+						</div>
+					</div>
+					<div class="grid grid-cols-2 gap-2 mb-2">
+						<div>💰 Сума</div>
+						<div>{accountResponse.moneyRequest.amount} {accountResponse.currency.code}</div>
+					</div>
+					<div class="grid grid-cols-2 gap-2">
+						<button on:click={() => processMoneyRequest('approve')} {disabled} class="bg-green-500"
+							>Схвалити</button
+						>
+						<button on:click={() => processMoneyRequest('reject')} {disabled} class="bg-red-500"
+							>Відхилити</button
+						>
+					</div>
+				</div>
+			{/if}
+		</div>
+	{/if}
+</GuildPage>
