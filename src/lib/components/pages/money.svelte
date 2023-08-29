@@ -14,18 +14,15 @@
 		name: string;
 	};
 
-	let currencies: CurrencyType[] = [];
-
 	onMount(async () => {
 		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
 			guild_id: guild.id
 		});
 		if (response) {
-			currencies = response;
-			if (currencies.length) {
-				account.currency_id = currencies[0].id;
+			if (response.length) {
+				account.currency_id = response[0].id;
 			}
-			options = currencies.map((item) => {
+			options = response.map((item) => {
 				return {
 					value: item.id,
 					text: item.name

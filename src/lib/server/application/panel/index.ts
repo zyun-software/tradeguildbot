@@ -3,6 +3,7 @@ import { Api } from '../api';
 import {
 	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
+	CreateMoneyRequestAction,
 	FindGuildMemberAccountAction,
 	FindNotApprovedGuildMembers,
 	GetGuildCurrenciesAction,
@@ -30,6 +31,7 @@ export class Panel extends Api {
 				data
 			),
 			'change-selected-guild-id': new ChangeSelectedGuildIdAction([], user, data),
+			'create-money-request': new CreateMoneyRequestAction([guard.guildMember], user, data),
 			'find-guild-member-account': new FindGuildMemberAccountAction(
 				[guard.guildMaster],
 				user,

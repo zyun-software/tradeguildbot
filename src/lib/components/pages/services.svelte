@@ -3,6 +3,7 @@
 	import GuildPage from '../parts/guild-page.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Guild from './guild.svelte';
+	import MoneyRequest from './money-request.svelte';
 
 	let guild: GuildType;
 </script>
@@ -19,12 +20,9 @@
 	<Menu
 		buttons={[
 			{
-				emoji: '📥',
-				text: 'Внести кошти'
-			},
-			{
-				emoji: '📤',
-				text: 'Отримати кошти'
+				emoji: '💰',
+				text: 'Запит коштів',
+				component: MoneyRequest
 			}
 		]}
 	/>

@@ -32,8 +32,6 @@
 		disabledFilter = false;
 	};
 
-	loadList();
-
 	const process = async (id: number, name: string, action: 'approve' | 'reject') => {
 		await confirmUtility(
 			`❓ ${action === 'approve' ? 'Схвалити' : 'Відхилити'} заявку від ${name}?`,
@@ -62,6 +60,7 @@
 	needNicknames={false}
 	onGetGuild={(value) => {
 		guild = value;
+		loadList();
 	}}
 >
 	<Form onSubmit={loadList}>

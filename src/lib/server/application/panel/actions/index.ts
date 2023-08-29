@@ -1,5 +1,6 @@
 export * from './change-guild-member-nickname';
 export * from './change-selected-guild-id';
+export * from './create-money-request';
 export * from './find-guild-member-account';
 export * from './find-not-approved-guild-members';
 export * from './get-guild-currencies';
