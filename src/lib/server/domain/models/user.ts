@@ -15,10 +15,15 @@ export class UserDefaultValue {
 	public static data: any = {};
 }
 
+type UserDataType = {
+	[k: string]: any;
+	selectedGuildId?: number;
+};
+
 export type UserModel = {
 	id: number;
 	route: string;
-	data: string;
+	data: UserDataType;
 };
 
 export class UserEntity extends Entity<UserModel, UserRepository> {
@@ -35,11 +40,11 @@ export class UserEntity extends Entity<UserModel, UserRepository> {
 		return this;
 	}
 
-	public get data(): any {
+	public get data(): UserDataType {
 		return this.__model.data;
 	}
 
-	public async setData(value: any): Promise<UserEntity> {
+	public async setData(value: UserDataType): Promise<UserEntity> {
 		this.__model.data = value;
 		if (this.__created) {
 			this.__repository.updateData(this);

@@ -8,6 +8,7 @@
 	import Title from '../parts/title.svelte';
 	import Currencies from './currencies.svelte';
 	import Guild from './guild.svelte';
+	import Money from './money.svelte';
 	import Nickname from './nickname.svelte';
 	import Statements from './statements.svelte';
 
@@ -52,7 +53,8 @@
 		},
 		{
 			emoji: '💰',
-			text: 'Кошти'
+			text: 'Кошти',
+			component: Money
 		},
 		{
 			emoji: '🏷️',

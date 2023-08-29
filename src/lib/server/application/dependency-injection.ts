@@ -1,11 +1,14 @@
-import type {
-	CurrencyRepository,
-	GuildMemberRepository,
-	GuildRepository,
-	RequestRepository,
-	UserRepository
+import {
+	MoneyService,
+	type AccountRepository,
+	type CurrencyRepository,
+	type GuildMemberRepository,
+	type GuildRepository,
+	type RequestRepository,
+	type UserRepository
 } from '../domain';
 import {
+	AccountAdapter,
 	CurrencyAdapter,
 	GuildAdapter,
 	GuildMemberAdapter,
@@ -42,5 +45,21 @@ export class DependencyInjection {
 		const adapter = new CurrencyAdapter();
 
 		return adapter;
+	}
+
+	public static get AccountRepository(): AccountRepository {
+		const adapter = new AccountAdapter();
+
+		return adapter;
+	}
+
+	public static get MoneyService(): MoneyService {
+		const service = new MoneyService(
+			this.AccountRepository,
+			this.CurrencyRepository,
+			this.GuildMemberRepository
+		);
+
+		return service;
 	}
 }

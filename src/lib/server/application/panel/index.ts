@@ -3,11 +3,13 @@ import { Api } from '../api';
 import {
 	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
+	FindGuildMemberAccountAction,
 	FindNotApprovedGuildMembers,
 	GetGuildCurrenciesAction,
 	GetGuildMemberNicknamesAction,
 	ProcessGuildCurrencyAction,
 	ProcessJoiningTheGuildAction,
+	ProcessMoneyRequestAction,
 	RegistrationInGuildAction
 } from './actions';
 import { GuildMasterGuard, GuildMemberGuard } from './guards';
@@ -28,6 +30,11 @@ export class Panel extends Api {
 				data
 			),
 			'change-selected-guild-id': new ChangeSelectedGuildIdAction([], user, data),
+			'find-guild-member-account': new FindGuildMemberAccountAction(
+				[guard.guildMaster],
+				user,
+				data
+			),
 			'find-not-approved-guild-members': new FindNotApprovedGuildMembers(
 				[guard.guildMaster],
 				user,
@@ -45,6 +52,7 @@ export class Panel extends Api {
 				user,
 				data
 			),
+			'process-money-request': new ProcessMoneyRequestAction([guard.guildMaster], user, data),
 			'registration-in-guild': new RegistrationInGuildAction([], user, data)
 		};
 	}

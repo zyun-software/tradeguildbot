@@ -34,22 +34,18 @@ CREATE TABLE currencies (
     CONSTRAINT uc_guild_code UNIQUE (guild_id, code)
 );
 
+CREATE TYPE money_request_type AS ENUM ('introduction', 'receiving');
+
 CREATE TABLE accounts (
     id SERIAL PRIMARY KEY,
     guild_member_id BIGINT REFERENCES guild_members(id) ON DELETE CASCADE,
     currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
     balance INTEGER NOT NULL DEFAULT 0,
     reserve INTEGER NOT NULL DEFAULT 0,
+    money_request BOOLEAN NOT NULL,
+    money_request_type money_request_type NOT NULL,
+    money_request_amount INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT uc_member_currency UNIQUE (guild_member_id, currency_id)
-);
-
-CREATE TYPE money_request_type AS ENUM ('introduction', 'receiving');
-
-CREATE TABLE money_request (
-    id SERIAL PRIMARY KEY,
-    account_id BIGINT UNIQUE REFERENCES accounts(id) ON DELETE CASCADE,
-    type money_request_type NOT NULL,
-    amount INTEGER NOT NULL
 );
 
 CREATE TABLE exchange_proposals (
