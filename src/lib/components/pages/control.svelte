@@ -43,10 +43,6 @@
 				component: Money
 			},
 			{
-				emoji: '🏷️',
-				text: 'Ціни'
-			},
-			{
 				emoji: '🗑️',
 				text: 'Вайп'
 			}

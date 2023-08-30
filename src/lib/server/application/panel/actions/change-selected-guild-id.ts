@@ -7,7 +7,7 @@ export class ChangeSelectedGuildIdAction extends ApiAction<{
 		const result: {
 			success: boolean;
 			error: string;
-			response: null | { message: string };
+			response: null | string;
 		} = {
 			success: false,
 			error: '',
@@ -26,9 +26,7 @@ export class ChangeSelectedGuildIdAction extends ApiAction<{
 		});
 
 		result.success = true;
-		result.response = {
-			message: '✅ Автоматичне відкриття меню гільдії налаштовано'
-		};
+		result.response = '✅ Автоматичне відкриття меню гільдії налаштовано';
 
 		return result;
 	}

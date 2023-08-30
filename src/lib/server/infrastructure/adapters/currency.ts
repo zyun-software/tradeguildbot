@@ -69,6 +69,7 @@ export class CurrencyAdapter extends CurrencyRepository {
 			LEFT JOIN accounts a ON c.id = a.currency_id
 			WHERE c.guild_id = ${id}
 			GROUP BY c.id
+			ORDER BY c.name
 		`;
 
 		const entities = this._list(models);

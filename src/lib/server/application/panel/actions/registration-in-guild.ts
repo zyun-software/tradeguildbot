@@ -15,7 +15,7 @@ export class RegistrationInGuildAction extends ApiAction<{
 		const result: {
 			success: boolean;
 			error: string;
-			response: null | { message: string };
+			response: null | string;
 		} = {
 			success: false,
 			error: '',
@@ -83,9 +83,7 @@ export class RegistrationInGuildAction extends ApiAction<{
 		});
 
 		result.success = true;
-		result.response = {
-			message: `✅ Заявку на вступ в гільдію ${guild.name} подано`
-		};
+		result.response = `✅ Заявку на вступ в гільдію ${guild.name} подано`;
 
 		return result;
 	}

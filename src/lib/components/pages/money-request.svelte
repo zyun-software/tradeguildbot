@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { GuildType } from '$lib/types';
+	import type { CurrencyType, GuildType } from '$lib/types';
 	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
@@ -8,11 +8,6 @@
 	import Services from './services.svelte';
 
 	let guild: GuildType;
-
-	type CurrencyType = {
-		id: number;
-		name: string;
-	};
 
 	let disabled: boolean = false;
 

@@ -33,7 +33,7 @@ export class Panel extends Api {
 			'change-selected-guild-id': new ChangeSelectedGuildIdAction([], user, data),
 			'create-money-request': new CreateMoneyRequestAction([guard.guildMember], user, data),
 			'find-guild-member-account': new FindGuildMemberAccountAction(
-				[guard.guildMaster],
+				[guard.guildMaster, guard.guildMember],
 				user,
 				data
 			),

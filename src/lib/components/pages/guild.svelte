@@ -8,6 +8,7 @@
 	import Hint from '../parts/hint.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Title from '../parts/title.svelte';
+	import Account from './account.svelte';
 	import Control from './control.svelte';
 	import Guilds from './guilds.svelte';
 	import Services from './services.svelte';
@@ -38,20 +39,21 @@
 			...[
 				{
 					emoji: '💳',
-					text: 'Рахунок'
+					text: 'Рахунок',
+					component: Account
 				},
 				{
-					emoji: '💱',
-					text: 'Біржа'
+					emoji: '⚡',
+					text: 'Послуги',
+					component: Services
 				},
 				{
 					emoji: '🛒',
 					text: 'Оголошення'
 				},
 				{
-					emoji: '⚡',
-					text: 'Послуги',
-					component: Services
+					emoji: '💱',
+					text: 'Біржа'
 				},
 				{
 					emoji: '🤖',
@@ -71,13 +73,13 @@
 		disabled: false,
 		handler: async () => {
 			registerForm.disabled = true;
-			const response = await requestUtility<{ message: string }>('registration-in-guild', {
+			const response = await requestUtility<string>('registration-in-guild', {
 				guild_id: guild.id,
 				nickname: registerForm.data.nickname
 			});
 			if (response) {
 				guild.nickname = registerForm.data.nickname;
-				alertUtility(response.message);
+				alertUtility(response);
 			}
 			registerForm.disabled = false;
 		}

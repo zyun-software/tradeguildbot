@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { GuildType } from '$lib/types';
+	import type { CurrencyType, GuildType } from '$lib/types';
 	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
@@ -7,13 +7,6 @@
 	import Control from './control.svelte';
 
 	let guild: GuildType;
-
-	type CurrencyType = {
-		id: number;
-		code: string;
-		name: string;
-		capital: number;
-	};
 
 	let currencies: CurrencyType[] = [];
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { GuildType } from '$lib/types';
+	import type { AccountResponseType, CurrencyType, GuildType } from '$lib/types';
 	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
 	import { onMount } from 'svelte';
 	import Input from '../parts/fieldset/input.svelte';
@@ -7,12 +7,6 @@
 	import Form from '../parts/form.svelte';
 	import GuildPage from '../parts/guild-page.svelte';
 	import Control from './control.svelte';
-
-	type CurrencyType = {
-		id: number;
-		code: string;
-		name: string;
-	};
 
 	onMount(async () => {
 		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
@@ -40,20 +34,6 @@
 	const account = {
 		nickname: '',
 		currency_id: -1
-	};
-
-	type AccountResponseType = {
-		name: string;
-		currency: {
-			name: string;
-			code: string;
-		};
-		balance: number;
-		reserve: number;
-		moneyRequest?: {
-			type: 'introduction' | 'receiving';
-			amount: number;
-		};
 	};
 
 	let accountResponse: AccountResponseType | undefined = undefined;
@@ -138,11 +118,12 @@
 					<div>{accountResponse.currency.name}</div>
 				</div>
 				<div class="grid grid-cols-2 gap-2 mb-2">
-					<div>💰 Сума</div>
-					<div>
-						{accountResponse.balance + accountResponse.reserve} ({accountResponse.balance} / {accountResponse.reserve})
-						{accountResponse.currency.code}
-					</div>
+					<div>💰 Баланс</div>
+					<div>{accountResponse.balance} {accountResponse.currency.code}</div>
+				</div>
+				<div class="grid grid-cols-2 gap-2">
+					<div>🔒 Резерв</div>
+					<div>{accountResponse.reserve} {accountResponse.currency.code}</div>
 				</div>
 			</div>
 			{#if accountResponse.moneyRequest}

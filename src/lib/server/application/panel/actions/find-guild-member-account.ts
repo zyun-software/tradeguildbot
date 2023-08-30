@@ -1,4 +1,5 @@
 import type { AccountEntity, CurrencyEntity, GuildMemberEntity } from '$lib/server/domain';
+import type { AccountResponseType } from '$lib/types';
 import { ApiAction, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
@@ -12,19 +13,7 @@ export class FindGuildMemberAccountAction extends ApiAction<{
 		const result: {
 			success: boolean;
 			error: string;
-			response: null | {
-				name: string;
-				currency: {
-					name: string;
-					code: string;
-				};
-				balance: number;
-				reserve: number;
-				moneyRequest?: {
-					type: 'introduction' | 'receiving';
-					amount: number;
-				};
-			};
+			response: null | AccountResponseType;
 		} = {
 			success: false,
 			error: '',

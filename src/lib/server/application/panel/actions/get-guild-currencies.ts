@@ -1,3 +1,4 @@
+import type { CurrencyType } from '$lib/types';
 import { ApiAction, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
@@ -9,14 +10,7 @@ export class GetGuildCurrenciesAction extends ApiAction<{
 		const result: {
 			success: boolean;
 			error: string;
-			response:
-				| null
-				| {
-						id: number;
-						code: string;
-						name: string;
-						capital: number;
-				  }[];
+			response: null | CurrencyType[];
 		} = {
 			success: false,
 			error: '',

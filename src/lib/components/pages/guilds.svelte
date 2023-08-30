@@ -20,7 +20,7 @@
 
 		if (response) {
 			guildId.set(value);
-			alertUtility(response.message);
+			alertUtility(response);
 		}
 
 		disabled = false;
