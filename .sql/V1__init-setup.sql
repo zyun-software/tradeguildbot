@@ -57,9 +57,11 @@ CREATE TABLE invoices (
     id SERIAL PRIMARY KEY,
     from_account_id BIGINT REFERENCES accounts(id) ON DELETE CASCADE,
     to_account_id BIGINT REFERENCES accounts(id) ON DELETE CASCADE,
-    paid BOOLEAN NOT NULL,
     amount INTEGER NOT NULL,
-    purpose TEXT NOT NULL
+    purpose TEXT NOT NULL,
+    paid BOOLEAN NOT NULL,
+    paid_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE exchange_proposals (

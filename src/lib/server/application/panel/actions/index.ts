@@ -10,3 +10,4 @@ export * from './process-joining-the-guild';
 export * from './process-money-request';
 export * from './registration-in-guild';
 export * from './transfer-funds';
+export * from './wipe';

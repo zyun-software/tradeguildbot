@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { selectedGuildId } from '$lib/stores';
 	import type { GuildType } from '$lib/types';
+	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
 	import GuildPage from '../parts/guild-page.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Currencies from './currencies.svelte';
@@ -9,6 +11,26 @@
 	import Statements from './statements.svelte';
 
 	let guild: GuildType;
+
+	const wipe = async () => {
+		confirmUtility('❓ Виконати вайп гільдії?', (yes) => {
+			if (!yes) return;
+			confirmUtility(
+				'❓ Ви дійсно впевнені? Ця дія незворотньо видалить всю інформацію повязану з гільдією.',
+				async (yes) => {
+					if (!yes) return;
+					const response = await requestUtility<{ new_guild_id: number; message: string }>('wipe', {
+						guild_id: guild.id
+					});
+					if (response) {
+						alertUtility(response.message);
+						guild.id = response.new_guild_id;
+						selectedGuildId.set(response.new_guild_id);
+					}
+				}
+			);
+		});
+	};
 </script>
 
 <GuildPage
@@ -44,7 +66,8 @@
 			},
 			{
 				emoji: '🗑️',
-				text: 'Вайп'
+				text: 'Вайп',
+				handler: wipe
 			}
 		]}
 	/>

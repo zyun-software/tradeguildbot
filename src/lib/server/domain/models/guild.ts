@@ -11,6 +11,7 @@ export abstract class GuildRepository
 	public abstract findByOwnerId(id: number): Promise<GuildEntity | null>;
 	public abstract getActiveList(): Promise<GuildEntity[]>;
 	public abstract save(entity: GuildEntity): Promise<GuildEntity>;
+	public abstract delete(entity: GuildEntity): Promise<void>;
 }
 
 export class GuildDefaultValue {

@@ -12,7 +12,8 @@ import {
 	ProcessJoiningTheGuildAction,
 	ProcessMoneyRequestAction,
 	RegistrationInGuildAction,
-	TransferFundsAction
+	TransferFundsAction,
+	WipeAction
 } from './actions';
 import { GuildMasterGuard, GuildMemberGuard } from './guards';
 
@@ -57,7 +58,8 @@ export class Panel extends Api {
 			),
 			'process-money-request': new ProcessMoneyRequestAction([guard.guildMaster], user, data),
 			'registration-in-guild': new RegistrationInGuildAction([], user, data),
-			'transfer-funds': new TransferFundsAction([guard.guildMember], user, data)
+			'transfer-funds': new TransferFundsAction([guard.guildMember], user, data),
+			wipe: new WipeAction([guard.guildMaster], user, data)
 		};
 	}
 }

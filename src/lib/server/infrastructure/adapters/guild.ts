@@ -67,6 +67,15 @@ export class GuildAdapter extends GuildRepository {
 		return entities;
 	}
 
+	public async delete(entity: GuildEntity): Promise<void> {
+		const { id } = entity;
+
+		await sql`
+		    DELETE FROM ${sql(table)}
+		    WHERE id = ${id}
+		`;
+	}
+
 	public async save(entity: GuildEntity): Promise<GuildEntity> {
 		const { id, name, owner_id, active, _created } = entity;
 
