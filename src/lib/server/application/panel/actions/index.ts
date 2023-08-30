@@ -9,3 +9,4 @@ export * from './process-guild-currency';
 export * from './process-joining-the-guild';
 export * from './process-money-request';
 export * from './registration-in-guild';
+export * from './transfer-funds';

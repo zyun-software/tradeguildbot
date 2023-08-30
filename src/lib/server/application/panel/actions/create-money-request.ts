@@ -1,4 +1,4 @@
-import type { AccountEntity, CurrencyEntity, GuildMemberEntity } from '$lib/server/domain';
+import type { MoneyType } from '$lib/server/domain';
 import { ApiAction, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
@@ -23,11 +23,7 @@ export class CreateMoneyRequestAction extends ApiAction<{
 			response: null
 		};
 
-		let money: {
-			guild_member: GuildMemberEntity;
-			account: AccountEntity;
-			currency: CurrencyEntity;
-		};
+		let money: MoneyType;
 
 		try {
 			money = await moneyService.getByNameAndCurrencyIdAndGuildId(

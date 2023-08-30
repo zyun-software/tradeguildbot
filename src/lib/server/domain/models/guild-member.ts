@@ -4,8 +4,6 @@ export abstract class GuildMemberRepository
 	extends RepositoryId<GuildMemberEntity>
 	implements RepositorySave<GuildMemberEntity>
 {
-	public abstract updateUserId(entity: GuildMemberEntity): Promise<void>;
-	public abstract updateGuildId(entity: GuildMemberEntity): Promise<void>;
 	public abstract updateName(entity: GuildMemberEntity): Promise<void>;
 	public abstract updateApproved(entity: GuildMemberEntity): Promise<void>;
 
@@ -49,26 +47,8 @@ export class GuildMemberEntity extends Entity<GuildMemberModel, GuildMemberRepos
 		return this.__model.user_id;
 	}
 
-	public async setUserId(value: number): Promise<GuildMemberEntity> {
-		this.__model.user_id = value;
-		if (this.__created) {
-			await this.__repository.updateUserId(this);
-		}
-
-		return this;
-	}
-
 	public get guild_id(): number {
 		return this.__model.guild_id;
-	}
-
-	public async setGuildId(value: number): Promise<GuildMemberEntity> {
-		this.__model.guild_id = value;
-		if (this.__created) {
-			await this.__repository.updateGuildId(this);
-		}
-
-		return this;
 	}
 
 	public get name(): string {

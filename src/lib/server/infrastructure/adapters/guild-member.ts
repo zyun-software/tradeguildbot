@@ -8,26 +8,6 @@ import { sql } from '../api';
 const table = 'guild_members';
 
 export class GuildMemberAdapter extends GuildMemberRepository {
-	public async updateUserId(entity: GuildMemberEntity): Promise<void> {
-		const { id, user_id } = entity;
-
-		await sql`
-      UPDATE ${sql(table)}
-      SET user_id = ${user_id}
-      WHERE id = ${id}
-    `;
-	}
-
-	public async updateGuildId(entity: GuildMemberEntity): Promise<void> {
-		const { id, guild_id } = entity;
-
-		await sql`
-      UPDATE ${sql(table)}
-      SET guild_id = ${guild_id}
-      WHERE id = ${id}
-    `;
-	}
-
 	public async updateName(entity: GuildMemberEntity): Promise<void> {
 		const { id, name } = entity;
 

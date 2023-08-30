@@ -57,7 +57,9 @@ export class DependencyInjection {
 		const service = new MoneyService(
 			this.AccountRepository,
 			this.CurrencyRepository,
-			this.GuildMemberRepository
+			this.GuildMemberRepository,
+			this.RequestRepository,
+			this.GuildRepository
 		);
 
 		return service;

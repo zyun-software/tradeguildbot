@@ -1,4 +1,4 @@
-import type { AccountEntity, CurrencyEntity, GuildMemberEntity } from '$lib/server/domain';
+import type { MoneyType } from '$lib/server/domain';
 import { ApiAction, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
@@ -22,11 +22,7 @@ export class ProcessMoneyRequestAction extends ApiAction<{
 			response: null
 		};
 
-		let money: {
-			guild_member: GuildMemberEntity;
-			account: AccountEntity;
-			currency: CurrencyEntity;
-		};
+		let money: MoneyType;
 
 		const guild = await guildRepository.getById(this._data.guild_id);
 

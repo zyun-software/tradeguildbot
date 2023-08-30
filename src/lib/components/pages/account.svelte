@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AccountResponseType, CurrencyType, GuildType } from '$lib/types';
-	import { requestUtility } from '$lib/utilities';
+	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
 	import Textarea from '../parts/fieldset/textarea.svelte';
@@ -14,13 +14,15 @@
 
 	let currencies: { value: number; text: string }[] = [];
 
+	let clearChildTextarea: () => void;
+
 	const loadCurrencyList = async () => {
 		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
 			guild_id: guild.id
 		});
 		if (response) {
 			if (response.length) {
-				transactions.currency_id = response[0].id;
+				transaction.currency_id = response[0].id;
 			}
 			currencies = response.map((item) => {
 				return {
@@ -37,7 +39,7 @@
 		disabled = true;
 		const response = await requestUtility<AccountResponseType>('find-guild-member-account', {
 			guild_id: guild.id,
-			currency_id: transactions.currency_id,
+			currency_id: transaction.currency_id,
 			nickname: guild.nickname
 		});
 		if (response) {
@@ -46,11 +48,27 @@
 		disabled = false;
 	};
 
-	const transactions = {
+	const transaction = {
 		currency_id: -1,
-		receiver: undefined,
-		amount: undefined,
-		commend: undefined
+		receiver: '',
+		amount: '',
+		comment: ''
+	};
+
+	const transferFunds = async () => {
+		disabled = true;
+		const response = await requestUtility<string>('transfer-funds', {
+			guild_id: guild.id,
+			...transaction
+		});
+		if (response) {
+			alertUtility(response);
+			await loadAccount();
+			transaction.amount = '';
+			transaction.receiver = '';
+			transaction.comment = '';
+		}
+		disabled = false;
 	};
 </script>
 
@@ -69,9 +87,9 @@
 			id="currency"
 			name="💱 Валюта"
 			onChange={(value) => {
-				transactions.currency_id = value;
+				transaction.currency_id = value;
 			}}
-			selected={transactions.currency_id}
+			selected={transaction.currency_id}
 			options={currencies}
 		/>
 		<button {disabled} class="w-full">Переглянути баланс</button>
@@ -93,15 +111,15 @@
 				</div>
 			</div>
 		</div>
-		<Form onSubmit={() => {}}>
+		<Form onSubmit={transferFunds}>
 			<Input
 				id="receiver"
 				datalist="nicknames"
 				name="🏷️ Отримувач"
 				required={true}
-				value=""
+				value={transaction.receiver}
 				onInput={(value) => {
-					transactions.receiver = value;
+					transaction.receiver = value;
 				}}
 			/>
 			<Input
@@ -109,17 +127,17 @@
 				type="number"
 				name="💰 Сума"
 				required={true}
-				value=""
+				value={transaction.amount}
 				onInput={(value) => {
-					transactions.amount = value;
+					transaction.amount = value;
 				}}
 			/>
 			<Textarea
 				id="comment"
 				name="💬 Коментар"
-				value=""
+				bind:value={transaction.comment}
 				onInput={(value) => {
-					transactions.commend = value;
+					transaction.comment = value;
 				}}
 			/>
 			<button {disabled} class="w-full">Переказати кошти</button>

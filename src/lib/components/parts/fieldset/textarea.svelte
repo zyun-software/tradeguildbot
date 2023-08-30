@@ -6,6 +6,8 @@
 	export let onInput: ((value: any) => void) | undefined = undefined;
 
 	let onInputHandler = (event: Event) => {
+		console.log(123);
+		
 		if (onInput) onInput((event.target as HTMLTextAreaElement).value);
 	};
 </script>
