@@ -1,23 +1,17 @@
 import { GuildEntity, GuildMemberEntity } from '$lib/server/domain';
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class WipeAction extends ApiAction<{ guild_id: number }> {
-	public async execute(): Promise<ApiActionExecuteType> {
+type Response = {
+	new_guild_id: number;
+	message: string;
+};
+
+export class WipeAction extends ApiAction<{ guild_id: number }, Response> {
+	public async execute(): Promise<ApiActionExecuteType<Response>> {
 		const guildRepository = DependencyInjection.GuildRepository;
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | {
-				new_guild_id: number;
-				message: string;
-			};
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<Response>();
 
 		const guild = await guildRepository.getById(this._data.guild_id);
 		const guildMember = await guildMemberRepository.findByUserIdAndGuildId(

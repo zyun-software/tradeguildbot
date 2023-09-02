@@ -12,7 +12,7 @@ export class GuildMemberGuard extends GuardInterface<{
 			this._data.guild_id
 		);
 
-		if (!me) {
+		if (!me || !me.approved) {
 			return false;
 		}
 

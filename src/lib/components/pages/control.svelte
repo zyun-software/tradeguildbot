@@ -5,6 +5,7 @@
 	import GuildPage from '../parts/guild-page.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Currencies from './currencies.svelte';
+	import Expel from './expel.svelte';
 	import Guild from './guild.svelte';
 	import Money from './money.svelte';
 	import Nickname from './nickname.svelte';
@@ -63,6 +64,11 @@
 				emoji: '💰',
 				text: 'Кошти',
 				component: Money
+			},
+			{
+				emoji: '⛔',
+				text: 'Вигнати',
+				component: Expel
 			},
 			{
 				emoji: '🗑️',

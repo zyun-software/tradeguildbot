@@ -1,25 +1,20 @@
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 import { regex } from '../../regex';
 
-export class ChangeGuildMemberNicknameAction extends ApiAction<{
-	guild_id: number;
-	old: string;
-	new: string;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class ChangeGuildMemberNicknameAction extends ApiAction<
+	{
+		guild_id: number;
+		old: string;
+		new: string;
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
 		const guildRepository = DependencyInjection.GuildRepository;
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 		const telegram = DependencyInjection.RequestRepository.telegram;
-		const result: {
-			success: boolean;
-			error: string;
-			response: string | null;
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<string>();
 
 		if (!regex.minecraftNickname.test(this._data.new)) {
 			result.error = 'Потрібно вказати вірний формат псевдоніму';

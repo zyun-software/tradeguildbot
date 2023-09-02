@@ -1,25 +1,20 @@
 import { CurrencyEntity } from '$lib/server/domain';
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class ProcessGuildCurrencyAction extends ApiAction<{
-	guild_id: number;
-	action: 'add' | 'save' | 'delete';
-	code: string;
-	name: string;
-	id: number;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class ProcessGuildCurrencyAction extends ApiAction<
+	{
+		guild_id: number;
+		action: 'add' | 'save' | 'delete';
+		code: string;
+		name: string;
+		id: number;
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
 		const currencyRepository = DependencyInjection.CurrencyRepository;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | string;
-		} = {
-			success: false,
-			error: 'Невідома дія з валютою',
-			response: null
-		};
+		const result = getDefaultApiActionResult<string>();
 
 		if (this._data.action !== 'delete') {
 			const find = await currencyRepository.findByCode(this._data.code);

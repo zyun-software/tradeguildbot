@@ -1,21 +1,16 @@
 import type { CurrencyType } from '$lib/types';
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class GetGuildCurrenciesAction extends ApiAction<{
-	guild_id: number;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class GetGuildCurrenciesAction extends ApiAction<
+	{
+		guild_id: number;
+	},
+	CurrencyType[]
+> {
+	public async execute(): Promise<ApiActionExecuteType<CurrencyType[]>> {
 		const currencyRepository = DependencyInjection.CurrencyRepository;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | CurrencyType[];
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<CurrencyType[]>();
 
 		const list = await currencyRepository.getListByGuildId(this._data.guild_id);
 

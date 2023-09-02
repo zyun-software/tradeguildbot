@@ -1,24 +1,19 @@
 import type { MoneyType } from '$lib/server/domain';
 import type { AccountResponseType } from '$lib/types';
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class FindGuildMemberAccountAction extends ApiAction<{
-	guild_id: number;
-	currency_id: number;
-	nickname: string;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class FindGuildMemberAccountAction extends ApiAction<
+	{
+		guild_id: number;
+		currency_id: number;
+		nickname: string;
+	},
+	AccountResponseType
+> {
+	public async execute(): Promise<ApiActionExecuteType<AccountResponseType>> {
 		const moneyService = DependencyInjection.MoneyService;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | AccountResponseType;
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<AccountResponseType>();
 
 		let money: MoneyType;
 

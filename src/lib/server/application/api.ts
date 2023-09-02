@@ -2,10 +2,24 @@ import { ActionInterace } from '$lib/server/core';
 import type { UserEntity } from '$lib/server/domain';
 import { findUserByTokenUtility } from './utilities';
 
-export type ApiActionExecuteType = { success: boolean; error: string; response: any };
+export type ApiActionExecuteType<TResponse> = {
+	success: boolean;
+	error: string;
+	response: null | TResponse;
+};
 
-export abstract class ApiAction<TData> extends ActionInterace<TData> {
-	public abstract execute(): Promise<ApiActionExecuteType>;
+export abstract class ApiAction<TData, TResponse> extends ActionInterace<TData> {
+	public abstract execute(): Promise<ApiActionExecuteType<TResponse>>;
+}
+
+export function getDefaultApiActionResult<TResponse>(
+	error: string = ''
+): ApiActionExecuteType<TResponse> {
+	return {
+		success: false,
+		error,
+		response: null
+	};
 }
 
 export abstract class Api {
@@ -13,14 +27,14 @@ export abstract class Api {
 		private _method: string,
 		private _data: any,
 		private _user: UserEntity,
-		protected _actions: { [method: string]: ApiAction<any> } = {}
+		protected _actions: { [method: string]: ApiAction<any, any> } = {}
 	) {
 		if (typeof this._data !== 'object') {
 			this._data = {};
 		}
 	}
 
-	public async getResponse(): Promise<null | ApiActionExecuteType> {
+	public async getResponse(): Promise<null | ApiActionExecuteType<any>> {
 		if (this._method in this._actions) {
 			const action = this._actions[this._method];
 			const haveAccess = await action.auditAccess();
@@ -75,7 +89,7 @@ export async function executeApi(
 		}
 	} catch (error) {
 		console.log('ApiError', error);
-		
+
 		result.error = 'Виникла внутрішня помилка сервера';
 	}
 

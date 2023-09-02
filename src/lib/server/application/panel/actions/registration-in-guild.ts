@@ -1,26 +1,21 @@
 import { GuildMemberEntity } from '$lib/server/domain';
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 import { regex } from '../../regex';
 
-export class RegistrationInGuildAction extends ApiAction<{
-	guild_id: number;
-	nickname: string;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class RegistrationInGuildAction extends ApiAction<
+	{
+		guild_id: number;
+		nickname: string;
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
 		const guildRepository = DependencyInjection.GuildRepository;
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 		const telegram = DependencyInjection.RequestRepository.telegram;
 
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | string;
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<string>();
 
 		if (typeof this._data.guild_id !== 'number') {
 			result.error = 'Необхідно передати ідентифікатор гільдії';

@@ -1,27 +1,22 @@
 import type { MoneyType } from '$lib/server/domain';
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class CreateMoneyRequestAction extends ApiAction<{
-	guild_id: number;
-	name: string;
-	currency_id: number;
-	amount: number;
-	type: 'introduction' | 'receiving';
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class CreateMoneyRequestAction extends ApiAction<
+	{
+		guild_id: number;
+		name: string;
+		currency_id: number;
+		amount: number;
+		type: 'introduction' | 'receiving';
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
 		const telegram = DependencyInjection.RequestRepository.telegram;
 		const guildRepository = DependencyInjection.GuildRepository;
 		const moneyService = DependencyInjection.MoneyService;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | string;
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<string>();
 
 		let money: MoneyType;
 

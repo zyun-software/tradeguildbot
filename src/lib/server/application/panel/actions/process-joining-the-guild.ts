@@ -1,24 +1,19 @@
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class ProcessJoiningTheGuildAction extends ApiAction<{
-	guild_id: number;
-	id: number;
-	action: 'approve' | 'reject';
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class ProcessJoiningTheGuildAction extends ApiAction<
+	{
+		guild_id: number;
+		id: number;
+		action: 'approve' | 'reject';
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
 		const guildRepository = DependencyInjection.GuildRepository;
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 		const telegram = DependencyInjection.RequestRepository.telegram;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | string;
-		} = {
-			success: false,
-			error: 'Невідома дія',
-			response: null
-		};
+		const result = getDefaultApiActionResult<string>();
 
 		const guildMember = await guildMemberRepository.findById(this._data.id);
 		if (!guildMember) {

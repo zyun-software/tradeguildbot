@@ -38,6 +38,10 @@ export class MoneyService {
 			throw new Error('Власник цього рахунку не являється учасником гільдії');
 		}
 
+		if (!guild_member.approved) {
+			throw new Error('Гільдмайстер не підтвердив заявку на вступ цього гільдмайстра');
+		}
+
 		const currency = await this._currencyRepository.findById(currency_id);
 		if (!currency || currency.guild_id !== guild_id) {
 			throw new Error('Валюту не знайдено');

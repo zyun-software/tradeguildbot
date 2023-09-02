@@ -1,25 +1,20 @@
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class TransferFundsAction extends ApiAction<{
-	guild_id: number;
-	currency_id: number;
-	receiver: string;
-	amount: number;
-	comment: string;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+export class TransferFundsAction extends ApiAction<
+	{
+		guild_id: number;
+		currency_id: number;
+		receiver: string;
+		amount: number;
+		comment: string;
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 		const moneyService = DependencyInjection.MoneyService;
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | string;
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<string>();
 
 		if (
 			typeof this._data.currency_id !== 'number' ||
@@ -29,7 +24,7 @@ export class TransferFundsAction extends ApiAction<{
 		) {
 			result.error = 'Передані аргементи не вірні';
 			return result;
-		}    
+		}
 
 		const guildMember = await guildMemberRepository.findByUserIdAndGuildId(
 			this._user.id,

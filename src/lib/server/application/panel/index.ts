@@ -15,6 +15,7 @@ import {
 	TransferFundsAction,
 	WipeAction
 } from './actions';
+import { ExpelGuildMemberAction } from './actions/expel-guild-member';
 import { GuildMasterGuard, GuildMemberGuard } from './guards';
 
 export class Panel extends Api {
@@ -34,6 +35,7 @@ export class Panel extends Api {
 			),
 			'change-selected-guild-id': new ChangeSelectedGuildIdAction([], user, data),
 			'create-money-request': new CreateMoneyRequestAction([guard.guildMember], user, data),
+			'expel-guild-member': new ExpelGuildMemberAction([guard.guildMaster], user, data),
 			'find-guild-member-account': new FindGuildMemberAccountAction(
 				[guard.guildMaster, guard.guildMember],
 				user,

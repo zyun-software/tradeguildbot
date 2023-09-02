@@ -1,18 +1,13 @@
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 
-export class ChangeSelectedGuildIdAction extends ApiAction<{
-	guild_id: number;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
-		const result: {
-			success: boolean;
-			error: string;
-			response: null | string;
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+export class ChangeSelectedGuildIdAction extends ApiAction<
+	{
+		guild_id: number;
+	},
+	string
+> {
+	public async execute(): Promise<ApiActionExecuteType<string>> {
+		const result = getDefaultApiActionResult<string>();
 
 		if (typeof this._data.guild_id !== 'number') {
 			result.error =

@@ -1,27 +1,22 @@
-import { ApiAction, type ApiActionExecuteType } from '../../api';
+import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
 import { DependencyInjection } from '../../dependency-injection';
 
-export class FindNotApprovedGuildMembers extends ApiAction<{
-	guild_id: number;
+type Response = {
+	id: number;
 	name: string;
-}> {
-	public async execute(): Promise<ApiActionExecuteType> {
+}[];
+
+export class FindNotApprovedGuildMembers extends ApiAction<
+	{
+		guild_id: number;
+		name: string;
+	},
+	Response
+> {
+	public async execute(): Promise<ApiActionExecuteType<Response>> {
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 
-		const result: {
-			success: boolean;
-			error: string;
-			response:
-				| null
-				| {
-						id: number;
-						name: string;
-				  }[];
-		} = {
-			success: false,
-			error: '',
-			response: null
-		};
+		const result = getDefaultApiActionResult<Response>();
 
 		const { guild_id, name } = this._data;
 
