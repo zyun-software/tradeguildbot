@@ -1,12 +1,13 @@
 import {
+	ExchangeProposalRepository,
+	InvoiceRepository,
 	MoneyService,
 	type AccountRepository,
 	type CurrencyRepository,
 	type GuildMemberRepository,
 	type GuildRepository,
 	type RequestRepository,
-	type UserRepository,
-	ExchangeProposalRepository
+	type UserRepository
 } from '../domain';
 import {
 	AccountAdapter,
@@ -14,6 +15,7 @@ import {
 	ExchangeProposalAdapter,
 	GuildAdapter,
 	GuildMemberAdapter,
+	InvoiceAdapter,
 	RequestAdapter,
 	UserAdapter
 } from '../infrastructure';
@@ -61,13 +63,20 @@ export class DependencyInjection {
 		return adapter;
 	}
 
+	public static get InvoiceRepository(): InvoiceRepository {
+		const adapter = new InvoiceAdapter();
+
+		return adapter;
+	}
+
 	public static get MoneyService(): MoneyService {
 		const service = new MoneyService(
 			this.AccountRepository,
 			this.CurrencyRepository,
 			this.GuildMemberRepository,
 			this.RequestRepository,
-			this.GuildRepository
+			this.GuildRepository,
+			this.InvoiceRepository
 		);
 
 		return service;

@@ -3,6 +3,8 @@ import {
 	CurrencyEntity,
 	GuildMemberEntity,
 	GuildRepository,
+	InvoiceEntity,
+	InvoiceRepository,
 	type AccountRepository,
 	type CurrencyRepository,
 	type GuildMemberRepository,
@@ -21,7 +23,8 @@ export class MoneyService {
 		private _currencyRepository: CurrencyRepository,
 		private _guildMemberRepository: GuildMemberRepository,
 		private _requestRepository: RequestRepository,
-		private _guildRepository: GuildRepository
+		private _guildRepository: GuildRepository,
+		private _invoiceRepository: InvoiceRepository
 	) {}
 
 	public async getByNameAndCurrencyIdAndGuildId(
@@ -157,6 +160,100 @@ export class MoneyService {
 
 		result.success = true;
 		result.message = 'Переказ здійснено успішно';
+
+		return result;
+	}
+
+	public async createInvoice(
+		guild_id: number,
+		currency_id: number,
+		seller: string,
+		payer: string,
+		amount: number,
+		purpose: string
+	): Promise<{
+		success: boolean;
+		message: string;
+		id?: number;
+	}> {
+		const result: { success: boolean; message: string; id?: number } = {
+			success: false,
+			message: '',
+			id: undefined
+		};
+
+		if (amount < 1) {
+			result.message = 'Сума повинна бути більше нуля';
+			return result;
+		}
+
+		let moneySeller: MoneyType;
+		try {
+			moneySeller = await this.getByNameAndCurrencyIdAndGuildId(seller, currency_id, guild_id);
+		} catch (error: any) {
+			result.message = error.message;
+			return result;
+		}
+
+		let moneyPayer: MoneyType;
+		try {
+			moneyPayer = await this.getByNameAndCurrencyIdAndGuildId(payer, currency_id, guild_id);
+		} catch (error: any) {
+			result.message = error.message;
+			return result;
+		}
+
+		if (moneySeller.guild_member.id === moneyPayer.guild_member.id) {
+			result.message = 'Не можна виставляти рахунок самому собі';
+			return result;
+		}
+
+		const count = await this._invoiceRepository.countByAccountIds(
+			moneySeller.account.id,
+			moneyPayer.account.id
+		);
+
+		if (count >= 10) {
+			result.message = 'Платник повинен сплатити виставлені вами рахунки';
+			return result;
+		}
+
+		purpose = purpose.replace(/\s+/g, ' ').trim();
+		purpose = purpose.length ? purpose : 'не вказано';
+		const maxLength = 200;
+		purpose = purpose.length > maxLength ? purpose.substring(0, maxLength) : purpose;
+
+		const entity = await this._invoiceRepository.save(
+			new InvoiceEntity({
+				model: {
+					id: -1,
+					seller_account_id: moneySeller.account.id,
+					payer_account_id: moneyPayer.account.id,
+					amount,
+					purpose,
+					paid: false
+				},
+				repository: this._invoiceRepository
+			})
+		);
+
+		const guild = await this._guildRepository.getById(guild_id);
+
+		await this._requestRepository.telegram('sendMessage', {
+			chat_id: moneyPayer.guild_member.user_id,
+			text:
+				'📋 Вам виставлено рахунок\n\n' +
+				`🏛️ Гільдія: ${guild.name}\n` +
+				`🎫 Код: ${entity.id}\n` +
+				`🏷️ Продавець: ${moneyPayer.guild_member.name}\n` +
+				`💰 Сума: ${amount} ${moneyPayer.currency.code}\n` +
+				`💼 Призначення: ${purpose}`,
+			parse_mode: undefined
+		});
+
+		result.success = true;
+		result.message = `Рахунок виставлено, код: ${entity.id}`;
+		result.id = entity.id;
 
 		return result;
 	}

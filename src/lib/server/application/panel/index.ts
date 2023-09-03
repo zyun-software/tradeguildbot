@@ -18,6 +18,7 @@ import {
 	TransferFundsAction,
 	WipeAction
 } from './actions';
+import { BillAction } from './actions/bill';
 import { ExpelGuildMemberAction } from './actions/expel-guild-member';
 import { GuildMasterGuard, GuildMemberGuard } from './guards';
 
@@ -31,6 +32,7 @@ export class Panel extends Api {
 		};
 
 		this._actions = {
+			bill: new BillAction([guard.guildMember], user, data),
 			'change-guild-member-nickname': new ChangeGuildMemberNicknameAction(
 				[guard.guildMaster],
 				user,
