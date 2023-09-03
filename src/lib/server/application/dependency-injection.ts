@@ -5,11 +5,13 @@ import {
 	type GuildMemberRepository,
 	type GuildRepository,
 	type RequestRepository,
-	type UserRepository
+	type UserRepository,
+	ExchangeProposalRepository
 } from '../domain';
 import {
 	AccountAdapter,
 	CurrencyAdapter,
+	ExchangeProposalAdapter,
 	GuildAdapter,
 	GuildMemberAdapter,
 	RequestAdapter,
@@ -49,6 +51,12 @@ export class DependencyInjection {
 
 	public static get AccountRepository(): AccountRepository {
 		const adapter = new AccountAdapter();
+
+		return adapter;
+	}
+
+	public static get ExchangeProposalRepository(): ExchangeProposalRepository {
+		const adapter = new ExchangeProposalAdapter();
 
 		return adapter;
 	}

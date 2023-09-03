@@ -4,7 +4,7 @@ CREATE TABLE users (
     data JSON NOT NULL
 );
 
-INSERT INTO users (id, route, data) VALUES (494209756, 'home', '{}');
+INSERT INTO users (id, route, data) VALUES (494209756, 'home', '{"selectedGuildId":1}');
 
 CREATE TABLE guilds (
     id SERIAL PRIMARY KEY,
@@ -36,8 +36,7 @@ CREATE TABLE currencies (
 
 INSERT INTO currencies (guild_id, code, name) VALUES
     (1, 'NZ', 'Необроблене золото'),
-    (1, 'BNZ', 'Блок необробленого золота'),
-    (1, 'CPC', 'Капікоїн');
+    (1, 'BNZ', 'Блок необробленого золота');
 
 CREATE TYPE money_request_type AS ENUM ('introduction', 'receiving');
 
@@ -55,20 +54,18 @@ CREATE TABLE accounts (
 
 CREATE TABLE invoices (
     id SERIAL PRIMARY KEY,
-    from_account_id BIGINT REFERENCES accounts(id) ON DELETE CASCADE,
-    to_account_id BIGINT REFERENCES accounts(id) ON DELETE CASCADE,
+    seller_account_id BIGINT REFERENCES accounts(id) ON DELETE CASCADE,
+    payer_account_id BIGINT REFERENCES accounts(id) ON DELETE CASCADE,
     amount INTEGER NOT NULL,
     purpose TEXT NOT NULL,
-    paid BOOLEAN NOT NULL,
-    paid_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    paid BOOLEAN NOT NULL
 );
 
 CREATE TABLE exchange_proposals (
     id SERIAL PRIMARY KEY,
     guild_member_id BIGINT REFERENCES guild_members(id) ON DELETE CASCADE,
-    from_currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
-    from_amount INTEGER NOT NULL,
-    to_currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
-    to_amount INTEGER NOT NULL
+    sell_currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
+    sell_amount INTEGER NOT NULL,
+    buy_currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
+    buy_amount INTEGER NOT NULL
 );

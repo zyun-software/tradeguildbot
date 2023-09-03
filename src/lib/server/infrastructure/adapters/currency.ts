@@ -48,12 +48,15 @@ export class CurrencyAdapter extends CurrencyRepository {
 		return result;
 	}
 
-	public async findByCode(code: string): Promise<CurrencyEntity | null> {
+	public async findByCodeAndGuildId(
+		code: string,
+		guild_id: number
+	): Promise<CurrencyEntity | null> {
 		const models = await sql<CurrencyModel[]>`
       SELECT c.*, CAST(COALESCE(SUM(a.reserve + a.balance), 0) AS INTEGER) AS capital
       FROM ${sql(table)} c
       LEFT JOIN accounts a ON c.id = a.currency_id
-      WHERE LOWER(c.code) = LOWER(${code})
+      WHERE LOWER(c.code) = LOWER(${code}) AND guild_id = ${guild_id}
       GROUP BY c.id
     `;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { CurrencyType, GuildType } from '$lib/types';
-	import { alertUtility, requestUtility } from '$lib/utilities';
+	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
 	import GuildPage from '../parts/guild-page.svelte';
@@ -133,9 +133,12 @@
 					>
 					<button
 						on:click={() =>
-							process({
-								action: 'delete',
-								id
+							confirmUtility(`❓ Дійсно видалити валюту ${name}?`, (yes) => {
+								if (!yes) return;
+								process({
+									action: 'delete',
+									id
+								});
 							})}
 						{disabled}
 						class="bg-red-500">Видалити</button

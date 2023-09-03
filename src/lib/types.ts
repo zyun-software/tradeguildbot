@@ -35,3 +35,22 @@ export type CurrencyType = {
 	name: string;
 	capital: number;
 };
+
+export type OptionType<TValue extends string | number> = {
+	value: TValue;
+	text: string;
+};
+
+export type Pagination<TItems> = {
+	items: TItems;
+	next: boolean;
+	page: number;
+};
+
+export type ExchangeOffer = {
+	id: number;
+	sell_currency_id: number;
+	sell_amount: number;
+	buy_currency_id: number;
+	buy_amount: number;
+};

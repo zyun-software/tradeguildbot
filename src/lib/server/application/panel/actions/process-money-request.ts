@@ -56,6 +56,13 @@ export class ProcessMoneyRequestAction extends ApiAction<
 					message = '✅ Запит на отримання коштів схвалено';
 					result.response = '✅ Запит схвалено';
 				} else {
+					if (money.account.money_request_type === 'receiving') {
+						const reserve = money.account.reserve - money.account.money_request_amount;
+						await money.account.setReserve(reserve);
+						const balance = money.account.balance + money.account.money_request_amount;
+						await money.account.setBalance(balance);
+					}
+
 					message = '🚫 Запит на отримання коштів відхилено';
 					result.response = '🚫 Запит відхилено';
 				}

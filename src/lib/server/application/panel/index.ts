@@ -3,11 +3,14 @@ import { Api } from '../api';
 import {
 	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
+	CreateAnExchangeOfferAction,
 	CreateMoneyRequestAction,
 	FindGuildMemberAccountAction,
 	FindNotApprovedGuildMembers,
+	GetExchangeProposalsAction,
 	GetGuildCurrenciesAction,
 	GetGuildMemberNicknamesAction,
+	ProcessExchangeOfferAction,
 	ProcessGuildCurrencyAction,
 	ProcessJoiningTheGuildAction,
 	ProcessMoneyRequestAction,
@@ -35,6 +38,7 @@ export class Panel extends Api {
 			),
 			'change-selected-guild-id': new ChangeSelectedGuildIdAction([], user, data),
 			'create-money-request': new CreateMoneyRequestAction([guard.guildMember], user, data),
+			'create-an-exchange-offer': new CreateAnExchangeOfferAction([guard.guildMember], user, data),
 			'expel-guild-member': new ExpelGuildMemberAction([guard.guildMaster], user, data),
 			'find-guild-member-account': new FindGuildMemberAccountAction(
 				[guard.guildMaster, guard.guildMember],
@@ -46,12 +50,14 @@ export class Panel extends Api {
 				user,
 				data
 			),
+			'get-exchange-proposals': new GetExchangeProposalsAction([guard.guildMember], user, data),
 			'get-guild-currencies': new GetGuildCurrenciesAction([guard.guildMember], user, data),
 			'get-guild-member-nicknames': new GetGuildMemberNicknamesAction(
 				[guard.guildMember],
 				user,
 				data
 			),
+			'process-exchange-offer': new ProcessExchangeOfferAction([guard.guildMember], user, data),
 			'process-guild-currency': new ProcessGuildCurrencyAction([guard.guildMaster], user, data),
 			'process-joining-the-guild': new ProcessJoiningTheGuildAction(
 				[guard.guildMaster],

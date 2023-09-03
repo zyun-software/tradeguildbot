@@ -25,6 +25,8 @@ export class RequestAdapter implements RequestRepository {
 
 			error.config.data = JSON.parse(error.config.data);
 			console.log('Додаткові деталі про помилку:', error.config);
+
+			return null;
 		}
 	}
 }

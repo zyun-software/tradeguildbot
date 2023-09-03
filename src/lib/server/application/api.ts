@@ -56,6 +56,7 @@ export abstract class Api {
 
 export async function executeApi(
 	token: string,
+	type: 'panel' | 'api',
 	createApi: (user: UserEntity) => Api
 ): Promise<{
 	unauthorized: boolean;
@@ -70,7 +71,7 @@ export async function executeApi(
 		response: null
 	};
 
-	const user = await findUserByTokenUtility(token, 'panel');
+	const user = await findUserByTokenUtility(token, type);
 
 	if (!user) {
 		result.unauthorized = true;

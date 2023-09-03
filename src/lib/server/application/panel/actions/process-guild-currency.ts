@@ -17,11 +17,13 @@ export class ProcessGuildCurrencyAction extends ApiAction<
 		const result = getDefaultApiActionResult<string>();
 
 		if (this._data.action !== 'delete') {
-			const find = await currencyRepository.findByCode(this._data.code);
+			const find = await currencyRepository.findByCodeAndGuildId(
+				this._data.code,
+				this._data.guild_id
+			);
 
 			if (
 				find &&
-				find.guild_id === this._data.guild_id &&
 				(this._data.action === 'add' || (this._data.action === 'save' && this._data.id !== find.id))
 			) {
 				result.error = 'Валюта з таким кодом вже існує';

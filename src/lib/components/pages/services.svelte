@@ -2,7 +2,10 @@
 	import type { GuildType } from '$lib/types';
 	import GuildPage from '../parts/guild-page.svelte';
 	import Menu from '../parts/menu.svelte';
+	import Bill from './bill.svelte';
+	import CreateAnExchangeOffer from './create-an-exchange-offer.svelte';
 	import Guild from './guild.svelte';
+	import Invoices from './invoices.svelte';
 	import MoneyRequest from './money-request.svelte';
 
 	let guild: GuildType;
@@ -26,15 +29,18 @@
 			},
 			{
 				emoji: '📋',
-				text: 'Виставити рахунок'
+				text: 'Виставити рахунок',
+				component: Bill
 			},
 			{
 				emoji: '🧾',
-				text: 'Переглянути рахунки'
+				text: 'Переглянути рахунки',
+				component: Invoices
 			},
 			{
 				emoji: '💱',
-				text: 'Створити обмін на біржі'
+				text: 'Створити обмін на біржі',
+				component: CreateAnExchangeOffer
 			},
 			{
 				emoji: '🛒',

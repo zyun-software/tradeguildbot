@@ -8,7 +8,7 @@ export abstract class CurrencyRepository
 	public abstract updateCode(entity: CurrencyEntity): Promise<void>;
 	public abstract updateName(entity: CurrencyEntity): Promise<void>;
 
-	public abstract findByCode(code: string): Promise<CurrencyEntity | null>;
+	public abstract findByCodeAndGuildId(code: string, guild_id: number): Promise<CurrencyEntity | null>;
 	public abstract getListByGuildId(id: number): Promise<CurrencyEntity[]>;
 	public abstract save(entity: CurrencyEntity): Promise<CurrencyEntity>;
 	public abstract delete(entity: CurrencyEntity): Promise<void>;
