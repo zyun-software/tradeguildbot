@@ -1,4 +1,5 @@
 import {
+	AnnouncementRepository,
 	ExchangeProposalRepository,
 	InvoiceRepository,
 	MoneyService,
@@ -11,6 +12,7 @@ import {
 } from '../domain';
 import {
 	AccountAdapter,
+	AnnouncementAdapter,
 	CurrencyAdapter,
 	ExchangeProposalAdapter,
 	GuildAdapter,
@@ -65,6 +67,12 @@ export class DependencyInjection {
 
 	public static get InvoiceRepository(): InvoiceRepository {
 		const adapter = new InvoiceAdapter();
+
+		return adapter;
+	}
+
+	public static get AnnouncementRepository(): AnnouncementRepository {
+		const adapter = new AnnouncementAdapter(this.GuildMemberRepository);
 
 		return adapter;
 	}

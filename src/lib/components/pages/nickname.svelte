@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { GuildType } from '$lib/types';
-	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
+	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Form from '../parts/form.svelte';
 	import GuildPage from '../parts/guild-page.svelte';
@@ -16,23 +16,17 @@
 	};
 
 	const onSubmit = async () => {
-		await confirmUtility(
-			`❓ Дійсно змінити псевдонім з ${nickname.old} на ${nickname.new}?`,
-			async (yes) => {
-				if (!yes) return;
-				disabled = true;
-				const response = await requestUtility<string>('change-guild-member-nickname', {
-					guild_id: guild.id,
-					...nickname
-				});
-				if (response) {
-					alertUtility(response);
-					nickname.old = '';
-					nickname.new = '';
-				}
-				disabled = false;
-			}
-		);
+		disabled = true;
+		const response = await requestUtility<string>('change-guild-member-nickname', {
+			guild_id: guild.id,
+			...nickname
+		});
+		if (response) {
+			alertUtility(response);
+			nickname.old = '';
+			nickname.new = '';
+		}
+		disabled = false;
 	};
 </script>
 
@@ -41,9 +35,7 @@
 	hint="ℹ️ Тут можна відредагувати псевдонім учасника гільдії"
 	backToPage={Control}
 	needNicknames={true}
-	onGetGuild={(value) => {
-		guild = value;
-	}}
+	bind:guild
 >
 	<Form {onSubmit}>
 		<Input

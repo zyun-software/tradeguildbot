@@ -4,7 +4,9 @@ CREATE TABLE users (
     data JSON NOT NULL
 );
 
-INSERT INTO users (id, route, data) VALUES (494209756, 'home', '{"selectedGuildId":1}');
+INSERT INTO users (id, route, data) VALUES
+    (494209756, 'home', '{"selectedGuildId":1}'),
+    (873687184, 'home', '{"selectedGuildId":1}');
 
 CREATE TABLE guilds (
     id SERIAL PRIMARY KEY,
@@ -24,7 +26,9 @@ CREATE TABLE guild_members (
     CONSTRAINT unique_guild_member UNIQUE (guild_id, name)
 );
 
-INSERT INTO guild_members (user_id, guild_id, name, approved) VALUES (494209756, 1, 'Ziozyun', TRUE);
+INSERT INTO guild_members (user_id, guild_id, name, approved) VALUES
+    (494209756, 1, 'Ziozyun', TRUE),
+    (873687184, 1, 'NeMoKyryl', TRUE);
 
 CREATE TABLE currencies (
     id SERIAL PRIMARY KEY,
@@ -68,4 +72,12 @@ CREATE TABLE exchange_proposals (
     sell_amount INTEGER NOT NULL,
     buy_currency_id BIGINT REFERENCES currencies(id) ON DELETE CASCADE,
     buy_amount INTEGER NOT NULL
+);
+
+CREATE TABLE announcements (
+    id SERIAL PRIMARY KEY,
+    guild_member_id BIGINT REFERENCES guild_members(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    seller VARCHAR(255) NOT NULL
 );

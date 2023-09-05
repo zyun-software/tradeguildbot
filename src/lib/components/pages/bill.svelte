@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CurrencyType, GuildType } from '$lib/types';
-	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
+	import type { GuildType, OptionType } from '$lib/types';
+	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
 	import Textarea from '../parts/fieldset/textarea.svelte';
@@ -8,24 +8,7 @@
 	import GuildPage from '../parts/guild-page.svelte';
 	import Services from './services.svelte';
 
-	let currencies: { value: number; text: string }[] = [];
-
-	const loadCurrencyList = async () => {
-		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
-			guild_id: guild.id
-		});
-		if (response) {
-			if (response.length) {
-				bill.currency_id = response[0].id;
-			}
-			currencies = response.map((item) => {
-				return {
-					value: item.id,
-					text: item.name
-				};
-			});
-		}
-	};
+	let options: OptionType<number>[] = [];
 
 	let guild: GuildType;
 
@@ -39,21 +22,18 @@
 	};
 
 	const onSubmit = async () => {
-		await confirmUtility(`❓ Дійсно виставити рахунок ${bill.name}?`, async (yes) => {
-			if (!yes) return;
-			disabled = true;
-			const response = await requestUtility<string>('bill', {
-				guild_id: guild.id,
-				...bill
-			});
-			if (response) {
-				alertUtility(response);
-				bill.name = '';
-				bill.amount = '';
-				bill.purpose = '';
-			}
-			disabled = false;
+		disabled = true;
+		const response = await requestUtility<string>('bill', {
+			guild_id: guild.id,
+			...bill
 		});
+		if (response) {
+			alertUtility(response);
+			bill.name = '';
+			bill.amount = '';
+			bill.purpose = '';
+		}
+		disabled = false;
 	};
 </script>
 
@@ -62,10 +42,14 @@
 	hint="ℹ️ Тут можна виставити рахунок учаснику гільдії"
 	backToPage={Services}
 	needNicknames={true}
-	onGetGuild={(value) => {
-		guild = value;
-		loadCurrencyList();
+	needCurrencies={true}
+	mountCallback={({ currency }) => {
+		options = currency.options;
+		if (options.length) {
+			bill.currency_id = options[0].value;
+		}
 	}}
+	bind:guild
 >
 	<Form {onSubmit}>
 		<Input
@@ -85,7 +69,7 @@
 				bill.currency_id = value;
 			}}
 			selected={bill.currency_id}
-			options={currencies}
+			{options}
 		/>
 		<Input
 			id="amount"
@@ -100,7 +84,7 @@
 		<Textarea
 			id="purpose"
 			name="💼 Призначення"
-      required={true}
+			required={true}
 			bind:value={bill.purpose}
 			onInput={(value) => {
 				bill.purpose = value;

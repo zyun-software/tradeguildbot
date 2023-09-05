@@ -9,8 +9,11 @@
 	import Menu from '../parts/menu.svelte';
 	import Title from '../parts/title.svelte';
 	import Account from './account.svelte';
+	import Api from './api.svelte';
 	import Control from './control.svelte';
+	import Exchange from './exchange.svelte';
 	import Guilds from './guilds.svelte';
+	import SearchAnAd from './search-an-ad.svelte';
 	import Services from './services.svelte';
 
 	onMount(() => {
@@ -49,15 +52,18 @@
 				},
 				{
 					emoji: '🛒',
-					text: 'Оголошення'
+					text: 'Оголошення',
+					component: SearchAnAd
 				},
 				{
 					emoji: '💱',
-					text: 'Біржа'
+					text: 'Біржа',
+					component: Exchange
 				},
 				{
 					emoji: '🤖',
-					text: 'API'
+					text: 'API',
+					component: Api
 				}
 			]
 		);

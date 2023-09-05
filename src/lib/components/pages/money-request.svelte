@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CurrencyType, GuildType } from '$lib/types';
+	import type { GuildType, OptionType } from '$lib/types';
 	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
@@ -11,28 +11,11 @@
 
 	let disabled: boolean = false;
 
-	let currencies: { value: number; text: string }[] = [];
+	let options: OptionType<number>[] = [];
 	let types: { value: string; text: string }[] = [
 		{ value: 'introduction', text: 'Внесення' },
 		{ value: 'receiving', text: 'Отримання' }
 	];
-
-	const loadList = async () => {
-		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
-			guild_id: guild.id
-		});
-		if (response) {
-			if (response.length) {
-				moneyRequest.currency_id = response[0].id;
-			}
-			currencies = response.map((item) => {
-				return {
-					value: item.id,
-					text: item.name
-				};
-			});
-		}
-	};
 
 	const moneyRequest = {
 		currency_id: -1,
@@ -61,11 +44,14 @@
 	title="💰 Запит коштів"
 	hint="ℹ️ Тут можна створити запит на внесення або отримання коштів у відповідній валюті"
 	backToPage={Services}
-	needNicknames={false}
-	onGetGuild={(value) => {
-		guild = value;
-		loadList();
+	needCurrencies={true}
+	mountCallback={({ currency }) => {
+		options = currency.options;
+		if (options.length) {
+			moneyRequest.currency_id = options[0].value;
+		}
 	}}
+	bind:guild
 >
 	<Form onSubmit={process}>
 		<Select
@@ -75,7 +61,7 @@
 				moneyRequest.currency_id = value;
 			}}
 			selected={moneyRequest.currency_id}
-			options={currencies}
+			{options}
 		/>
 
 		<Select

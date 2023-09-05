@@ -34,9 +34,7 @@
 	hint="ℹ️ Тут можна вигнати учасника гільдії"
 	backToPage={Control}
 	needNicknames={true}
-	onGetGuild={(value) => {
-		guild = value;
-	}}
+	bind:guild
 >
 	<Form {onSubmit}>
 		<Input

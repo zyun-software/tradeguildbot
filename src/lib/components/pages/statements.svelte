@@ -57,11 +57,8 @@
 	title="📄 Заявки на вступ"
 	hint="ℹ️ Тут відображені актуальні запити на вступ до гільдії, які ви зможете затвердити або відхилити"
 	backToPage={Control}
-	needNicknames={false}
-	onGetGuild={(value) => {
-		guild = value;
-		loadList();
-	}}
+	mountCallback={loadList}
+	bind:guild
 >
 	<Form onSubmit={loadList}>
 		<Input id="nickname" name="🏷️ Псевдонім" value={name} onInput={(value) => (name = value)} />

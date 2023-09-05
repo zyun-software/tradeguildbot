@@ -1,35 +1,17 @@
 <script lang="ts">
-	import type { AccountResponseType, CurrencyType, GuildType } from '$lib/types';
+	import type { AccountResponseType, GuildType, OptionType } from '$lib/types';
 	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
-	import { onMount } from 'svelte';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
 	import Form from '../parts/form.svelte';
 	import GuildPage from '../parts/guild-page.svelte';
 	import Control from './control.svelte';
 
-	onMount(async () => {
-		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
-			guild_id: guild.id
-		});
-		if (response) {
-			if (response.length) {
-				account.currency_id = response[0].id;
-			}
-			options = response.map((item) => {
-				return {
-					value: item.id,
-					text: item.name
-				};
-			});
-		}
-	});
-
 	let guild: GuildType;
 
 	let disabled: boolean = false;
 
-	let options: { value: number; text: string }[] = [];
+	let options: OptionType<number>[] = [];
 
 	const account = {
 		nickname: '',
@@ -77,9 +59,14 @@
 	hint="ℹ️ Тут можна керувати коштами учасника гільдії"
 	backToPage={Control}
 	needNicknames={true}
-	onGetGuild={(value) => {
-		guild = value;
+	needCurrencies={true}
+	mountCallback={({ currency }) => {
+		options = currency.options;
+		if (options.length) {
+			account.currency_id = options[0].value;
+		}
 	}}
+	bind:guild
 >
 	<Form onSubmit={onSearchHandler}>
 		<Input

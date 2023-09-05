@@ -6,7 +6,6 @@
 	import Menu from '../parts/menu.svelte';
 	import Currencies from './currencies.svelte';
 	import Expel from './expel.svelte';
-	import Guild from './guild.svelte';
 	import Money from './money.svelte';
 	import Nickname from './nickname.svelte';
 	import Statements from './statements.svelte';
@@ -34,15 +33,7 @@
 	};
 </script>
 
-<GuildPage
-	title="🎛️ Керування гільдією"
-	hint="ℹ️ Це меню керування гільдією"
-	backToPage={Guild}
-	needNicknames={false}
-	onGetGuild={(value) => {
-		guild = value;
-	}}
->
+<GuildPage title="🎛️ Керування гільдією" hint="ℹ️ Це меню керування гільдією" bind:guild>
 	<Menu
 		buttons={[
 			{

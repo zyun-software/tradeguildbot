@@ -1,15 +1,20 @@
 import type { UserEntity } from '$lib/server/domain';
 import { Api } from '../api';
 import {
+	BillAction,
 	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
 	CreateAnExchangeOfferAction,
 	CreateMoneyRequestAction,
+	ExpelGuildMemberAction,
 	FindGuildMemberAccountAction,
 	FindNotApprovedGuildMembers,
+	GetAnnouncementsAction,
 	GetExchangeProposalsAction,
+	GetGuildAnnouncementUniqueTitlesAction,
 	GetGuildCurrenciesAction,
 	GetGuildMemberNicknamesAction,
+	ProcessAnAdAction,
 	ProcessExchangeOfferAction,
 	ProcessGuildCurrencyAction,
 	ProcessJoiningTheGuildAction,
@@ -18,8 +23,6 @@ import {
 	TransferFundsAction,
 	WipeAction
 } from './actions';
-import { BillAction } from './actions/bill';
-import { ExpelGuildMemberAction } from './actions/expel-guild-member';
 import { GuildMasterGuard, GuildMemberGuard } from './guards';
 
 export class Panel extends Api {
@@ -52,13 +55,20 @@ export class Panel extends Api {
 				user,
 				data
 			),
+			'get-announcements': new GetAnnouncementsAction([guard.guildMember], user, data),
 			'get-exchange-proposals': new GetExchangeProposalsAction([guard.guildMember], user, data),
+			'get-guild-announcement-unique-titles': new GetGuildAnnouncementUniqueTitlesAction(
+				[guard.guildMember],
+				user,
+				data
+			),
 			'get-guild-currencies': new GetGuildCurrenciesAction([guard.guildMember], user, data),
 			'get-guild-member-nicknames': new GetGuildMemberNicknamesAction(
 				[guard.guildMember],
 				user,
 				data
 			),
+			'process-an-ad': new ProcessAnAdAction([guard.guildMember], user, data),
 			'process-exchange-offer': new ProcessExchangeOfferAction([guard.guildMember], user, data),
 			'process-guild-currency': new ProcessGuildCurrencyAction([guard.guildMaster], user, data),
 			'process-joining-the-guild': new ProcessJoiningTheGuildAction(

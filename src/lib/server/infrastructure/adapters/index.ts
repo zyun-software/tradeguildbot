@@ -1,4 +1,5 @@
 export * from './account';
+export * from './announcement';
 export * from './currency';
 export * from './exchange-proposal';
 export * from './guild';

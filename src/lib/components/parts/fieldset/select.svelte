@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { OptionType } from '$lib/types';
 	import { onMount } from 'svelte';
 
 	export let id: string;
 	export let name: string;
-	export let options: { value: string | number; text: string }[];
+	export let options: OptionType<number | string>[];
 	export let selected: string | number | undefined = undefined;
 	export let onChange: ((value: any) => void) | undefined = undefined;
 

@@ -8,14 +8,14 @@ export class GetExchangeProposalsAction extends ApiAction<
 		guild_id: number;
 		personal?: boolean;
 	},
-	Pagination<ExchangeOffer[]>
+	Pagination<ExchangeOffer>
 > {
-	public async execute(): Promise<ApiActionExecuteType<Pagination<ExchangeOffer[]>>> {
-		const result = getDefaultApiActionResult<Pagination<ExchangeOffer[]>>(
+	public async execute(): Promise<ApiActionExecuteType<Pagination<ExchangeOffer>>> {
+		const result = getDefaultApiActionResult<Pagination<ExchangeOffer>>(
 			'Не передані необхідні параметри'
 		);
 
-		const mapper = (entity: ExchangeProposalEntity) => {
+		const mapper = (entity: ExchangeProposalEntity): ExchangeOffer => {
 			return {
 				id: entity.id,
 				sell_currency_id: entity.sell_currency_id,
@@ -41,6 +41,7 @@ export class GetExchangeProposalsAction extends ApiAction<
 			const list = await exchangeProposalRepository.getListByGuildMemberId(guildMember.id);
 
 			result.success = true;
+
 			result.response = {
 				page: 1,
 				next: false,

@@ -1,25 +1,14 @@
 <script lang="ts">
-	import type { GuildType } from '$lib/types';
 	import GuildPage from '../parts/guild-page.svelte';
 	import Menu from '../parts/menu.svelte';
 	import Bill from './bill.svelte';
+	import CreateAnAd from './create-an-ad.svelte';
 	import CreateAnExchangeOffer from './create-an-exchange-offer.svelte';
-	import Guild from './guild.svelte';
 	import Invoices from './invoices.svelte';
 	import MoneyRequest from './money-request.svelte';
-
-	let guild: GuildType;
 </script>
 
-<GuildPage
-	title="⚡ Послуги гільдії"
-	hint="ℹ️ Тут відображені послуги гільдії"
-	backToPage={Guild}
-	needNicknames={false}
-	onGetGuild={(value) => {
-		guild = value;
-	}}
->
+<GuildPage title="⚡ Послуги гільдії" hint="ℹ️ Тут відображені послуги гільдії">
 	<Menu
 		buttons={[
 			{
@@ -44,7 +33,8 @@
 			},
 			{
 				emoji: '🛒',
-				text: 'Створити оголошення'
+				text: 'Створити оголошення',
+				component: CreateAnAd
 			}
 		]}
 	/>

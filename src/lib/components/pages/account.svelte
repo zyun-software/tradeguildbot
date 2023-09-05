@@ -1,37 +1,17 @@
 <script lang="ts">
-	import type { AccountResponseType, CurrencyType, GuildType } from '$lib/types';
+	import type { AccountResponseType, GuildType, OptionType } from '$lib/types';
 	import { alertUtility, requestUtility } from '$lib/utilities';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
 	import Textarea from '../parts/fieldset/textarea.svelte';
 	import Form from '../parts/form.svelte';
 	import GuildPage from '../parts/guild-page.svelte';
-	import Guild from './guild.svelte';
 
 	let guild: GuildType;
 
 	let disabled: boolean = false;
 
-	let currencies: { value: number; text: string }[] = [];
-
-	let clearChildTextarea: () => void;
-
-	const loadCurrencyList = async () => {
-		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
-			guild_id: guild.id
-		});
-		if (response) {
-			if (response.length) {
-				transaction.currency_id = response[0].id;
-			}
-			currencies = response.map((item) => {
-				return {
-					value: item.id,
-					text: item.name
-				};
-			});
-		}
-	};
+	let options: OptionType<number>[] = [];
 
 	let accountResponse: AccountResponseType | undefined = undefined;
 
@@ -75,12 +55,15 @@
 <GuildPage
 	title="💳 Персональний рахунок"
 	hint="ℹ️ Тут можна переглянути баланс у валютах та робити перекази коштів"
-	backToPage={Guild}
 	needNicknames={true}
-	onGetGuild={(value) => {
-		guild = value;
-		loadCurrencyList();
+	needCurrencies={true}
+	mountCallback={({ currency }) => {
+		options = currency.options;
+		if (options.length) {
+			transaction.currency_id = options[0].value;
+		}
 	}}
+	bind:guild
 >
 	<Form onSubmit={loadAccount}>
 		<Select
@@ -90,7 +73,7 @@
 				transaction.currency_id = value;
 			}}
 			selected={transaction.currency_id}
-			options={currencies}
+			{options}
 		/>
 		<button {disabled} class="w-full">Переглянути баланс</button>
 	</Form>

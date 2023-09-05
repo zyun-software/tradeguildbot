@@ -55,10 +55,9 @@
 	hint="ℹ️ Тут можна відредагувати валюти"
 	backToPage={Control}
 	needNicknames={false}
-	onGetGuild={(value) => {
-		guild = value;
-		loadList();
-	}}
+	needCurrencies={false}
+	mountCallback={loadList}
+	bind:guild
 >
 	<div class="mb-4">
 		<Form

@@ -1,49 +1,29 @@
 <script lang="ts">
 	import type { CurrencyType, ExchangeOffer, GuildType, OptionType, Pagination } from '$lib/types';
 	import { alertUtility, confirmUtility, requestUtility } from '$lib/utilities';
+	import { onMount } from 'svelte';
 	import Input from '../parts/fieldset/input.svelte';
 	import Select from '../parts/fieldset/select.svelte';
 	import Form from '../parts/form.svelte';
 	import GuildPage from '../parts/guild-page.svelte';
 	import Services from './services.svelte';
 
-	let exchangeProposals: Pagination<ExchangeOffer[]> = {
+	let currencies: CurrencyType[] = [];
+	let options: OptionType<number>[] = [];
+
+	let exchangeProposals: Pagination<ExchangeOffer> = {
 		items: [],
 		page: 1,
 		next: false
 	};
 
 	const loadExchangeProposals = async () => {
-		const response = await requestUtility<Pagination<ExchangeOffer[]>>('get-exchange-proposals', {
+		const response = await requestUtility<Pagination<ExchangeOffer>>('get-exchange-proposals', {
 			guild_id: guild.id,
 			personal: true
 		});
 		if (response) {
 			exchangeProposals = response;
-			console.log(exchangeProposals);
-		}
-	};
-
-	let currencies: CurrencyType[] = [];
-
-	let options: OptionType<number>[] = [];
-
-	const loadCurrencyList = async () => {
-		const response = await requestUtility<CurrencyType[]>('get-guild-currencies', {
-			guild_id: guild.id
-		});
-		if (response) {
-			if (response.length) {
-				exchangeOffer.sell_currency_id = response[0].id;
-				exchangeOffer.buy_currency_id = response[0].id;
-			}
-			currencies = response;
-			options = currencies.map((item) => {
-				return {
-					value: item.id,
-					text: item.name
-				};
-			});
 		}
 	};
 
@@ -90,23 +70,31 @@
 			disabled = false;
 		});
 	};
+
+	onMount(() => {
+		loadExchangeProposals();
+	});
 </script>
 
 <GuildPage
 	title="💱 Створення обміну на біржі"
 	hint="ℹ️ Тут можна створити обмін на біржі а також відмінити його"
 	backToPage={Services}
-	needNicknames={false}
-	onGetGuild={(value) => {
-		guild = value;
-		loadCurrencyList();
-		loadExchangeProposals();
+	needCurrencies={true}
+	mountCallback={({ currency }) => {
+		currencies = currency.items;
+		options = currency.options;
+		if (options.length) {
+			exchangeOffer.buy_currency_id = options[0].value;
+			exchangeOffer.sell_currency_id = options[0].value;
+		}
 	}}
+	bind:guild
 >
 	<Form {onSubmit}>
 		<Select
 			id="from_currency"
-			name="💱 Валюта продажу"
+			name="🛒 Валюта продажу"
 			onChange={(value) => {
 				exchangeOffer.sell_currency_id = value;
 			}}
@@ -125,7 +113,7 @@
 		/>
 		<Select
 			id="to_currency"
-			name="💱 Валюта купівлі"
+			name="🛍️ Валюта купівлі"
 			onChange={(value) => {
 				exchangeOffer.buy_currency_id = value;
 			}}

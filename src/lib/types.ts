@@ -41,8 +41,8 @@ export type OptionType<TValue extends string | number> = {
 	text: string;
 };
 
-export type Pagination<TItems> = {
-	items: TItems;
+export type Pagination<TItem> = {
+	items: TItem[];
 	next: boolean;
 	page: number;
 };
@@ -53,4 +53,11 @@ export type ExchangeOffer = {
 	sell_amount: number;
 	buy_currency_id: number;
 	buy_amount: number;
+};
+
+export type Announcement = {
+	id: number;
+	title: string;
+	description: string;
+	seller: string;
 };
