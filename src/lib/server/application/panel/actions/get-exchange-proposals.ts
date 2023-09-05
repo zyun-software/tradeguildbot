@@ -1,3 +1,4 @@
+import type { PaginationType } from '$lib/server/core';
 import type { ExchangeProposalEntity } from '$lib/server/domain';
 import type { ExchangeOffer, Pagination } from '$lib/types';
 import { ApiAction, getDefaultApiActionResult, type ApiActionExecuteType } from '../../api';
@@ -7,6 +8,9 @@ export class GetExchangeProposalsAction extends ApiAction<
 	{
 		guild_id: number;
 		personal?: boolean;
+		sell_currency_id?: number;
+		buy_currency_id?: number;
+		page: number;
 	},
 	Pagination<ExchangeOffer>
 > {
@@ -25,30 +29,51 @@ export class GetExchangeProposalsAction extends ApiAction<
 			};
 		};
 
+		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
+		const guildMember = await guildMemberRepository.getByUserIdAndGuildId(
+			this._user.id,
+			this._data.guild_id
+		);
+
 		const exchangeProposalRepository = DependencyInjection.ExchangeProposalRepository;
-		if (this._data.personal) {
-			const guildMemberRepository = DependencyInjection.GuildMemberRepository;
-			const guildMember = await guildMemberRepository.findByUserIdAndGuildId(
-				this._user.id,
-				this._data.guild_id
-			);
 
-			if (!guildMember) {
-				result.error = 'Учасника гільдії не знайдено';
-				return result;
-			}
+		let pagination: PaginationType<ExchangeProposalEntity>;
 
-			const list = await exchangeProposalRepository.getListByGuildMemberId(guildMember.id);
-
+		const getPaginatedResult = (pagination: PaginationType<ExchangeProposalEntity>) => {
 			result.success = true;
 
 			result.response = {
-				page: 1,
-				next: false,
-				items: list.map(mapper)
+				page: pagination.page,
+				next: pagination.next,
+				items: pagination.items.map(mapper)
 			};
 
 			return result;
+		};
+
+		if (this._data.personal) {
+			pagination = await exchangeProposalRepository.getListByGuildMemberId(
+				guildMember.id,
+				this._data.page
+			);
+
+			return getPaginatedResult(pagination);
+		}
+
+		if (this._data.buy_currency_id && this._data.sell_currency_id) {
+			if (this._data.buy_currency_id === this._data.sell_currency_id) {
+				result.error = 'Валюти повинні бути різними';
+				return result;
+			}
+
+			const pagination = await exchangeProposalRepository.getList(
+				this._data.sell_currency_id,
+				this._data.buy_currency_id,
+				guildMember.id,
+				this._data.page
+			);
+
+			return getPaginatedResult(pagination);
 		}
 
 		return result;

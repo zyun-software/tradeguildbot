@@ -46,15 +46,10 @@ export class CreateAnExchangeOfferAction extends ApiAction<
 
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 
-		const guildMember = await guildMemberRepository.findByUserIdAndGuildId(
+		const guildMember = await guildMemberRepository.getByUserIdAndGuildId(
 			this._user.id,
 			this._data.guild_id
 		);
-
-		if (!guildMember) {
-			result.error = 'Не знайдено учасника гільдії';
-			return result;
-		}
 
 		const moneyService = DependencyInjection.MoneyService;
 
@@ -84,11 +79,8 @@ export class CreateAnExchangeOfferAction extends ApiAction<
 			})
 		);
 
-		const balance = money.account.balance - this._data.sell_amount;
-		await money.account.setBalance(balance);
-
-		const reserve = money.account.reserve + this._data.sell_amount;
-		await money.account.setReserve(reserve);
+		await money.account.removeFromBalance(this._data.sell_amount);
+		await money.account.addToReserve(this._data.sell_amount);
 
 		result.success = true;
 		result.response = '✅ Пропозицію обміну створено';

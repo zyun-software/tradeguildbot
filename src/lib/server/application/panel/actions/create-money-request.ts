@@ -62,11 +62,8 @@ export class CreateMoneyRequestAction extends ApiAction<
 				return result;
 			}
 
-			const balance = money.account.balance - this._data.amount;
-			await money.account.setBalance(balance);
-
-			const reserve = money.account.reserve + this._data.amount;
-			await money.account.setReserve(reserve);
+			await money.account.removeFromBalance(this._data.amount);
+			await money.account.addToReserve(this._data.amount);
 		}
 
 		await money.account.setMoneyRequest(true);
@@ -81,6 +78,9 @@ export class CreateMoneyRequestAction extends ApiAction<
 				'🤲 Отримано запит коштів\n\n' +
 				`🏛️ Гільдія: *${guild.name}*\n` +
 				`🏷️ Отримувач: \`${money.guild_member.name}\`\n` +
+				`🔠 Тип: *${
+					this._data.type === 'introduction' ? 'Внесення на рахунок' : 'Отримання готівки'
+				}*\n` +
 				`💰 Сума: *${this._data.amount} ${money.currency.code}*`
 		});
 

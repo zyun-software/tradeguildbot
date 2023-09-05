@@ -1,3 +1,4 @@
+import { itemsPerPage, type PaginationType } from '$lib/server/core';
 import {
 	ExchangeProposalEntity,
 	ExchangeProposalRepository,
@@ -58,16 +59,54 @@ export class ExchangeProposalAdapter extends ExchangeProposalRepository {
 		return result;
 	}
 
-	public async getListByGuildMemberId(guild_member_id: number): Promise<ExchangeProposalEntity[]> {
-		const models = await sql<ExchangeProposalModel[]>`
+	public async getListByGuildMemberId(
+		guild_member_id: number,
+		page: number
+	): Promise<PaginationType<ExchangeProposalEntity>> {
+		const offset = (page - 1) * itemsPerPage;
+
+		const result = await sql<ExchangeProposalModel[]>`
         SELECT *
         FROM ${sql(table)}
         WHERE guild_member_id = ${guild_member_id}
-    `;
+        OFFSET ${offset}
+        LIMIT ${itemsPerPage + 1}`;
 
-		const entities = this._list(models);
+		const items = this._list(result.slice(0, itemsPerPage));
+		const nextPage = result.length > itemsPerPage;
 
-		return entities;
+		return {
+			items,
+			page,
+			next: nextPage
+		};
+	}
+
+	public async getList(
+		sell_currency_id: number,
+		buy_currency_id: number,
+		ignore_guild_member_id: number,
+		page: number
+	): Promise<PaginationType<ExchangeProposalEntity>> {
+		const offset = (page - 1) * itemsPerPage;
+
+		const result = await sql<ExchangeProposalModel[]>`
+			SELECT *
+			FROM ${sql(table)}
+			WHERE sell_currency_id = ${sell_currency_id}
+			AND buy_currency_id = ${buy_currency_id}
+			AND guild_member_id <> ${ignore_guild_member_id}
+			OFFSET ${offset}
+			LIMIT ${itemsPerPage + 1}`;
+
+		const items = this._list(result.slice(0, itemsPerPage));
+		const nextPage = result.length > itemsPerPage;
+
+		return {
+			items,
+			page,
+			next: nextPage
+		};
 	}
 
 	public async delete(entity: ExchangeProposalEntity): Promise<void> {

@@ -12,6 +12,11 @@ export abstract class GuildMemberRepository
 		guild_id: number
 	): Promise<GuildMemberEntity | null>;
 
+	public abstract getByUserIdAndGuildId(
+		user_id: number,
+		guild_id: number
+	): Promise<GuildMemberEntity>;
+
 	public abstract findByNameAndGuildId(
 		name: string,
 		guild_id: number

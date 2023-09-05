@@ -13,8 +13,8 @@
 
 	let options: OptionType<number>[] = [];
 	let types: { value: string; text: string }[] = [
-		{ value: 'introduction', text: 'Внесення' },
-		{ value: 'receiving', text: 'Отримання' }
+		{ value: 'introduction', text: 'Внесення на рахунок' },
+		{ value: 'receiving', text: 'Отримання готівки' }
 	];
 
 	const moneyRequest = {

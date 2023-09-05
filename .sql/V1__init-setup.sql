@@ -6,7 +6,8 @@ CREATE TABLE users (
 
 INSERT INTO users (id, route, data) VALUES
     (494209756, 'home', '{"selectedGuildId":1}'),
-    (873687184, 'home', '{"selectedGuildId":1}');
+    (873687184, 'home', '{"selectedGuildId":1}'),
+    (543592260, 'home', '{"selectedGuildId":1}');
 
 CREATE TABLE guilds (
     id SERIAL PRIMARY KEY,
@@ -28,7 +29,8 @@ CREATE TABLE guild_members (
 
 INSERT INTO guild_members (user_id, guild_id, name, approved) VALUES
     (494209756, 1, 'Ziozyun', TRUE),
-    (873687184, 1, 'NeMoKyryl', TRUE);
+    (873687184, 1, 'NeMoKyryl', TRUE),
+    (543592260, 1, 'Han__Salo', TRUE);
 
 CREATE TABLE currencies (
     id SERIAL PRIMARY KEY,

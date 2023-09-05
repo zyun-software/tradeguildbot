@@ -51,7 +51,7 @@
 					component: Services
 				},
 				{
-					emoji: '🛒',
+					emoji: '📢',
 					text: 'Оголошення',
 					component: SearchAnAd
 				},

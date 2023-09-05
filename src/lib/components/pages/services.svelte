@@ -32,7 +32,7 @@
 				component: CreateAnExchangeOffer
 			},
 			{
-				emoji: '🛒',
+				emoji: '📢',
 				text: 'Створити оголошення',
 				component: CreateAnAd
 			}

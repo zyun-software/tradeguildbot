@@ -125,8 +125,7 @@ export class MoneyService {
 		const maxLength = 200;
 		comment = comment.length > maxLength ? comment.substring(0, maxLength) : comment;
 
-		const meBalance = me.account.balance - amount;
-		await me.account.setBalance(meBalance);
+		await me.account.removeFromBalance(amount);
 
 		const toBalance =
 			me.guild_member.id === to.guild_member.id ? to.account.balance : to.account.balance + amount;

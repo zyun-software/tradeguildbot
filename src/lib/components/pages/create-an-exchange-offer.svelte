@@ -17,10 +17,13 @@
 		next: false
 	};
 
+	let page = 1;
+
 	const loadExchangeProposals = async () => {
 		const response = await requestUtility<Pagination<ExchangeOffer>>('get-exchange-proposals', {
 			guild_id: guild.id,
-			personal: true
+			personal: true,
+			page
 		});
 		if (response) {
 			exchangeProposals = response;
@@ -50,6 +53,7 @@
 			exchangeOffer.id = '';
 			exchangeOffer.sell_amount = '';
 			exchangeOffer.buy_amount = '';
+			await loadExchangeProposals();
 		}
 		disabled = false;
 	};
@@ -66,13 +70,13 @@
 			if (response) {
 				alertUtility(response);
 			}
-			loadExchangeProposals();
+			await loadExchangeProposals();
 			disabled = false;
 		});
 	};
 
-	onMount(() => {
-		loadExchangeProposals();
+	onMount(async () => {
+		await loadExchangeProposals();
 	});
 </script>
 
@@ -132,18 +136,28 @@
 		/>
 		<button {disabled} class="w-full">Створити пропозицію</button>
 	</Form>
-	<div class="mt-4">
+	<div class="mt-4 px-4">
+		{#if exchangeProposals.page > 1}
+			<button
+				on:click={() => {
+					page -= 1;
+					loadExchangeProposals();
+				}}
+				{disabled}
+				class="w-full mb-2">Попередня сторінка</button
+			>
+		{/if}
 		{#each exchangeProposals.items as exchangeOffer}
-			<div class="mb-2 mx-4 p-2 rounded bg-tg-secondary-bg-color">
+			<div class="mb-2 p-2 rounded bg-tg-secondary-bg-color">
 				<div class="grid grid-cols-2 gap-2 mb-2">
-					<div>💲 Продаю</div>
+					<div>🛒 Продаю</div>
 					<div>
 						{exchangeOffer.sell_amount}
 						{currencies.find((item) => item.id === exchangeOffer.sell_currency_id)?.code}
 					</div>
 				</div>
 				<div class="grid grid-cols-2 gap-2 mb-2">
-					<div>🛒 Купляю</div>
+					<div>🛍️ Купляю</div>
 					<div>
 						{exchangeOffer.buy_amount}
 						{currencies.find((item) => item.id === exchangeOffer.buy_currency_id)?.code}
@@ -154,5 +168,15 @@
 				>
 			</div>
 		{/each}
+		{#if exchangeProposals.next}
+			<button
+				on:click={() => {
+					page += 1;
+					loadExchangeProposals();
+				}}
+				{disabled}
+				class="w-full">Наступна сторінка</button
+			>
+		{/if}
 	</div>
 </GuildPage>

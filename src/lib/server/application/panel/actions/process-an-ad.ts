@@ -18,15 +18,10 @@ export class ProcessAnAdAction extends ApiAction<
 
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 
-		const guildMember = await guildMemberRepository.findByUserIdAndGuildId(
+		const guildMember = await guildMemberRepository.getByUserIdAndGuildId(
 			this._user.id,
 			this._data.guild_id
 		);
-
-		if (!guildMember) {
-			result.error = 'Учасника гільдії не знайдено';
-			return result;
-		}
 
 		const announcementRepository = DependencyInjection.AnnouncementRepository;
 

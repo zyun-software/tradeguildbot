@@ -1,12 +1,20 @@
-import { Entity, RepositoryId, type RepositorySave } from '$lib/server/core';
+import { Entity, RepositoryId, type PaginationType, type RepositorySave } from '$lib/server/core';
 
 export abstract class ExchangeProposalRepository
 	extends RepositoryId<ExchangeProposalEntity>
 	implements RepositorySave<ExchangeProposalEntity>
 {
 	public abstract getListByGuildMemberId(
-		guild_member_id: number
-	): Promise<ExchangeProposalEntity[]>;
+		guild_member_id: number,
+		page: number
+	): Promise<PaginationType<ExchangeProposalEntity>>;
+
+	public abstract getList(
+		sell_currency_id: number,
+		buy_currency_id: number,
+		ignore_guild_member_id: number,
+		page: number
+	): Promise<PaginationType<ExchangeProposalEntity>>;
 
 	public abstract save(entity: ExchangeProposalEntity): Promise<ExchangeProposalEntity>;
 	public abstract delete(entity: ExchangeProposalEntity): Promise<void>;

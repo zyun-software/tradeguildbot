@@ -60,7 +60,7 @@
 </script>
 
 <GuildPage
-	title="🛒 Створення оголошення"
+	title="📢 Створення оголошення"
 	hint="ℹ️ Тут можна створювати оголошення та відміняти ого. 🔗 - посилання на пост в Telegram."
 	needAnnouncementTitles={true}
 	backToPage={Services}
@@ -104,9 +104,19 @@
 		/>
 		<button {disabled} class="w-full">Створити</button>
 	</Form>
-	<div class="mt-4">
+	<div class="px-4 my-4">
+		{#if pagination.page > 1}
+			<button
+				on:click={() => {
+					page -= 1;
+					loadList();
+				}}
+				{disabled}
+				class="w-full mb-2">Попередня сторінка</button
+			>
+		{/if}
 		{#each pagination.items as { id, title, description, seller }}
-			<div class="px-4 mb-2">
+			<div class="mb-2">
 				<div class="bg-tg-secondary-bg-color rounded p-2">
 					<Input
 						id="save-title-{id}"
@@ -165,5 +175,15 @@
 				</div>
 			</div>
 		{/each}
+		{#if pagination.next}
+			<button
+				on:click={() => {
+					page += 1;
+					loadList();
+				}}
+				{disabled}
+				class="w-full">Наступна сторінка</button
+			>
+		{/if}
 	</div>
 </GuildPage>

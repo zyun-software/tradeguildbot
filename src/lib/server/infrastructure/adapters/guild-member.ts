@@ -43,6 +43,18 @@ export class GuildMemberAdapter extends GuildMemberRepository {
 		return result;
 	}
 
+	public async getByUserIdAndGuildId(
+		user_id: number,
+		guild_id: number
+	): Promise<GuildMemberEntity> {
+		const entity = await this.findByUserIdAndGuildId(user_id, guild_id);
+		if (!entity) {
+			throw new Error('Учасника гільдії не знайдено');
+		}
+
+		return entity;
+	}
+
 	public async findByNameAndGuildId(
 		name: string,
 		guild_id: number

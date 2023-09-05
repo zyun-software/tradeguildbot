@@ -33,15 +33,7 @@ export class ExpelGuildMemberAction extends ApiAction<
 			return result;
 		}
 
-		const guildMaster = await guildMemberRepository.findByUserIdAndGuildId(
-			guild.owner_id,
-			guild.id
-		);
-
-		if (!guildMaster) {
-			result.error = 'Схоже гільдмайстер пропав';
-			return result;
-		}
+		const guildMaster = await guildMemberRepository.getByUserIdAndGuildId(guild.owner_id, guild.id);
 
 		const currencies = await currencyRepository.getListByGuildId(guild.id);
 		for (const currency of currencies) {
@@ -60,8 +52,7 @@ export class ExpelGuildMemberAction extends ApiAction<
 			const kAmount = k.account.balance + k.account.reserve;
 			await k.account.setBalance(0);
 
-			const mBalance = kAmount + m.account.balance;
-			await m.account.setBalance(mBalance);
+			await m.account.addToBalance(kAmount);
 		}
 
 		await guildMemberRepository.delete(guildMember);

@@ -46,21 +46,17 @@ export class ProcessMoneyRequestAction extends ApiAction<
 				result.success = true;
 				if (this._data.action === 'approve') {
 					if (money.account.money_request_type === 'introduction') {
-						const balance = money.account.balance + money.account.money_request_amount;
-						await money.account.setBalance(balance);
+						await money.account.addToBalance(money.account.money_request_amount);
 					} else {
-						const reserve = money.account.reserve - money.account.money_request_amount;
-						await money.account.setReserve(reserve);
+						await money.account.removeFromReserve(money.account.money_request_amount);
 					}
 
 					message = '✅ Запит на отримання коштів схвалено';
 					result.response = '✅ Запит схвалено';
 				} else {
 					if (money.account.money_request_type === 'receiving') {
-						const reserve = money.account.reserve - money.account.money_request_amount;
-						await money.account.setReserve(reserve);
-						const balance = money.account.balance + money.account.money_request_amount;
-						await money.account.setBalance(balance);
+						await money.account.removeFromReserve(money.account.money_request_amount);
+						await money.account.addToBalance(money.account.money_request_amount);
 					}
 
 					message = '🚫 Запит на отримання коштів відхилено';

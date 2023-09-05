@@ -26,15 +26,10 @@ export class TransferFundsAction extends ApiAction<
 			return result;
 		}
 
-		const guildMember = await guildMemberRepository.findByUserIdAndGuildId(
+		const guildMember = await guildMemberRepository.getByUserIdAndGuildId(
 			this._user.id,
 			this._data.guild_id
 		);
-
-		if (!guildMember) {
-			result.error = 'Учасника гільдії не знайдено';
-			return result;
-		}
 
 		const transaction = await moneyService.transaction(
 			this._data.currency_id,

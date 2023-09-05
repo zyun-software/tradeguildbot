@@ -16,15 +16,10 @@ export class BillAction extends ApiAction<
 
 		const guildMemberRepository = DependencyInjection.GuildMemberRepository;
 
-		const guildMemberSeller = await guildMemberRepository.findByUserIdAndGuildId(
+		const guildMemberSeller = await guildMemberRepository.getByUserIdAndGuildId(
 			this._user.id,
 			this._data.guild_id
 		);
-
-		if (!guildMemberSeller || !guildMemberSeller.approved) {
-			result.error = 'Продавця не знайдено';
-			return result;
-		}
 
 		const moneyService = DependencyInjection.MoneyService;
 

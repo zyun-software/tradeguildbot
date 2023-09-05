@@ -29,15 +29,10 @@ export class GetAnnouncementsAction extends ApiAction<
 
 		if (this._data.personal) {
 			const guildMemberRepository = DependencyInjection.GuildMemberRepository;
-			const guildMember = await guildMemberRepository.findByUserIdAndGuildId(
+			const guildMember = await guildMemberRepository.getByUserIdAndGuildId(
 				this._user.id,
 				this._data.guild_id
 			);
-
-			if (!guildMember) {
-				result.error = 'Учасника гільдії не знайдено';
-				return result;
-			}
 
 			const pagination = await announcementRepository.getByGuildMemberIdList(
 				guildMember.id,

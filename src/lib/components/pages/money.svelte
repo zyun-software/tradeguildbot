@@ -118,7 +118,9 @@
 					<div class="grid grid-cols-2 gap-2 mb-2">
 						<div>🔁 Тип</div>
 						<div>
-							{accountResponse.moneyRequest.type === 'introduction' ? 'Внесення' : 'Отримання'} коштів
+							{accountResponse.moneyRequest.type === 'introduction'
+								? 'Внесення на рахунок'
+								: 'Отримання готівки'} коштів
 						</div>
 					</div>
 					<div class="grid grid-cols-2 gap-2 mb-2">

@@ -56,6 +56,18 @@ export class AccountEntity extends Entity<AccountModel, AccountRepository> {
 		return this;
 	}
 
+	public async addToBalance(value: number): Promise<AccountEntity> {
+		const result = await this.setBalance(this.__model.balance + value);
+
+		return result;
+	}
+
+	public async removeFromBalance(value: number): Promise<AccountEntity> {
+		const result = await this.setBalance(this.__model.balance - value);
+
+		return result;
+	}
+
 	public get reserve(): number {
 		return this.__model.reserve;
 	}
@@ -67,6 +79,18 @@ export class AccountEntity extends Entity<AccountModel, AccountRepository> {
 		}
 
 		return this;
+	}
+
+	public async addToReserve(value: number): Promise<AccountEntity> {
+		const result = await this.setReserve(this.__model.reserve + value);
+
+		return result;
+	}
+
+	public async removeFromReserve(value: number): Promise<AccountEntity> {
+		const result = await this.setReserve(this.__model.reserve - value);
+
+		return result;
 	}
 
 	public get money_request(): boolean {
