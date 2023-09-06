@@ -43,4 +43,52 @@
 		<Input id="url" name="🌐 Посилання" readonly={true} value={apiSettings.url} />
 		<button {disabled} class="w-full">Оновити</button>
 	</Form>
+	<pre class="rounded bg-tg-secondary-bg-color p-2 mx-4 mt-4 mb-2 overflow-auto">
+<b>Отримати список валют</b>
+curl --location '{apiSettings.url}' \
+--header 'x-token: {apiSettings.token}' \
+--header 'Content-Type: application/json' \
+--data '&#123;
+	"method": "get-currencies"
+&#125;'
+
+<b>Переказати кошти</b>
+curl --location '{apiSettings.url}' \
+--header 'x-token: {apiSettings.token}' \
+--header 'Content-Type: application/json' \
+--data '&#123;
+	"method": "transaction",
+	"data": &#123;
+		"currency_id": [ID валюти],
+		"receiver": "[Псевдонім отримувача]",
+		"amount": [Кількість валюти],
+		"comment": "[Коментар]"
+	&#125;
+&#125;'
+
+<b>Створити рахунок для оплати</b>
+curl --location '{apiSettings.url}' \
+--header 'x-token: {apiSettings.token}' \
+--header 'Content-Type: application/json' \
+--data '&#123;
+	"method": "create-invoice",
+	"data": &#123;
+		"currency_id": [ID валюти],
+		"payer": "[Псевдонім платника]",
+		"amount": [Сума],
+		"purpose": "[Призначення]"
+	&#125;
+&#125;'
+
+<b>Отримати рахунок для оплати</b>
+curl --location '{apiSettings.url}' \
+--header 'x-token: {apiSettings.token}' \
+--header 'Content-Type: application/json' \
+--data '&#123;
+	"method": "get-invoice",
+	"data": &#123;
+		"id": [ID рахунку]
+	&#125;
+&#125;'
+</pre>
 </GuildPage>

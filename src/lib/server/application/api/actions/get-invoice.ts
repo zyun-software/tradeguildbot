@@ -29,7 +29,7 @@ export class GetInvoiceAction extends ApiJsonAction<{ id: number }, ApiInvoice> 
 		const accountSeller = await invoice.getSellerAccount();
 		const guildMemberSeller = await accountSeller.getGuildMember();
 
-		if (![guildMemberSeller.id, guildMemberPayer.id].includes(guildMember.id)) {
+		if (guildMemberSeller.id !== guildMember.id) {
 			result.error = notFound;
 			return result;
 		}
