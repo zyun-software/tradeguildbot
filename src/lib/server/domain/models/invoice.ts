@@ -1,4 +1,5 @@
-import { Entity, RepositoryId, type RepositorySave } from '$lib/server/core';
+import { Entity, RepositoryId, type PaginationType, type RepositorySave } from '$lib/server/core';
+import type { AccountEntity } from './account';
 
 export abstract class InvoiceRepository
 	extends RepositoryId<InvoiceEntity>
@@ -10,6 +11,24 @@ export abstract class InvoiceRepository
 		seller_account_id: number,
 		payer_account_id: number
 	): Promise<number>;
+
+	public abstract getSellerAccount(entity: InvoiceEntity): Promise<AccountEntity>;
+	public abstract getPayerAccount(entity: InvoiceEntity): Promise<AccountEntity>;
+
+	public abstract getListBySellerMemberIdAndCurrencyIdAndNamePart(
+		member_id: number,
+		currency_id: number,
+		paid: boolean,
+		name: string,
+		page: number
+	): Promise<PaginationType<InvoiceEntity>>;
+	public abstract getListByPayerMemberIdAndCurrencyIdAndNamePart(
+		member_id: number,
+		currency_id: number,
+		paid: boolean,
+		name: string,
+		page: number
+	): Promise<PaginationType<InvoiceEntity>>;
 
 	public abstract save(entity: InvoiceEntity): Promise<InvoiceEntity>;
 	public abstract delete(entity: InvoiceEntity): Promise<void>;
@@ -52,5 +71,17 @@ export class InvoiceEntity extends Entity<InvoiceModel, InvoiceRepository> {
 		}
 
 		return this;
+	}
+
+	public async getSellerAccount(): Promise<AccountEntity> {
+		const account = await this.__repository.getSellerAccount(this);
+
+		return account;
+	}
+
+	public async getPayerAccount(): Promise<AccountEntity> {
+		const account = await this.__repository.getPayerAccount(this);
+
+		return account;
 	}
 }

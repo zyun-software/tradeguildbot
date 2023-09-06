@@ -1,9 +1,37 @@
-import { AccountEntity, AccountRepository, type AccountModel } from '$lib/server/domain';
+import {
+	AccountEntity,
+	AccountRepository,
+	GuildMemberEntity,
+	GuildMemberRepository,
+	type AccountModel
+} from '$lib/server/domain';
 import { sql } from '../api';
 
 const table = 'accounts';
 
 export class AccountAdapter extends AccountRepository {
+	public constructor(private _guildMemberRepository: GuildMemberRepository) {
+		super();
+	}
+
+	public async getGuildMember(entity: AccountEntity): Promise<GuildMemberEntity> {
+		const guildMember = await this._guildMemberRepository.getById(entity.guild_member_id);
+
+		return guildMember;
+	}
+
+	public async findById(id: number): Promise<AccountEntity | null> {
+		const models = await sql<AccountModel[]>`
+			SELECT *
+			FROM ${sql(table)}
+			WHERE id = ${id}
+    `;
+
+		const result = this._find(models);
+
+		return result;
+	}
+
 	public async updateBalance(entity: AccountEntity): Promise<void> {
 		const { id, balance } = entity;
 

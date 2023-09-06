@@ -246,7 +246,8 @@ export class MoneyService {
 				`🎫 Код: ${entity.id}\n` +
 				`🏷️ Продавець: ${moneyPayer.guild_member.name}\n` +
 				`💰 Сума: ${amount} ${moneyPayer.currency.code}\n` +
-				`💼 Призначення: ${purpose}`,
+				`💼 Призначення: ${purpose}\n\n` +
+				`#рахунок #${entity.id}`,
 			parse_mode: undefined
 		});
 

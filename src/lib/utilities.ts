@@ -2,12 +2,15 @@ import axios from 'axios';
 import Unauthorized from './components/pages/unauthorized.svelte';
 import { pageComponent, unauthorized as unauth } from './stores';
 
-export function alertUtility(message: any): void {
+export function alertUtility(message: any, callback?: () => void): void {
 	const webApp = window?.Telegram?.WebApp;
 	if (webApp) {
-		webApp.showAlert(message);
+		webApp.showAlert(message, callback);
 	} else {
 		alert(message);
+		if (callback) {
+			callback();
+		}
 	}
 }
 

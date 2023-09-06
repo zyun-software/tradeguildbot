@@ -54,7 +54,7 @@ export class DependencyInjection {
 	}
 
 	public static get AccountRepository(): AccountRepository {
-		const adapter = new AccountAdapter();
+		const adapter = new AccountAdapter(this.GuildMemberRepository);
 
 		return adapter;
 	}
@@ -66,7 +66,7 @@ export class DependencyInjection {
 	}
 
 	public static get InvoiceRepository(): InvoiceRepository {
-		const adapter = new InvoiceAdapter();
+		const adapter = new InvoiceAdapter(this.AccountRepository);
 
 		return adapter;
 	}

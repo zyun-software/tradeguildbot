@@ -61,3 +61,19 @@ export type Announcement = {
 	description: string;
 	seller: string;
 };
+
+export type ApiInvoice = {
+	id: number;
+	paid: boolean;
+	amount: number;
+	currency_id: number;
+	currency_code: string;
+	seller_name: string;
+	payer_name: string;
+	purpose: string;
+};
+
+export type Invoice = ApiInvoice & {
+	can_pay: boolean;
+	can_cancel: boolean;
+};

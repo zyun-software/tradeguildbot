@@ -1,9 +1,32 @@
-import { InvoiceEntity, InvoiceRepository, type InvoiceModel } from '$lib/server/domain';
+import { itemsPerPage, type PaginationType } from '$lib/server/core';
+import {
+	AccountEntity,
+	AccountRepository,
+	InvoiceEntity,
+	InvoiceRepository,
+	type InvoiceModel
+} from '$lib/server/domain';
 import { sql } from '../api';
 
 const table = 'invoices';
 
 export class InvoiceAdapter extends InvoiceRepository {
+	public constructor(private _accountRepository: AccountRepository) {
+		super();
+	}
+
+	public getSellerAccount(entity: InvoiceEntity): Promise<AccountEntity> {
+		const account = this._accountRepository.getById(entity.seller_account_id);
+
+		return account;
+	}
+
+	public getPayerAccount(entity: InvoiceEntity): Promise<AccountEntity> {
+		const account = this._accountRepository.getById(entity.payer_account_id);
+
+		return account;
+	}
+
 	public async updatePaid(entity: InvoiceEntity): Promise<InvoiceEntity> {
 		const { id, paid } = entity;
 
@@ -89,6 +112,72 @@ export class InvoiceAdapter extends InvoiceRepository {
 		const count = result[0]?.count ?? 0;
 
 		return count;
+	}
+
+	public async getListBySellerMemberIdAndCurrencyIdAndNamePart(
+		member_id: number,
+		currency_id: number,
+		paid: boolean,
+		name: string,
+		page: number
+	): Promise<PaginationType<InvoiceEntity>> {
+		const offset = (page - 1) * itemsPerPage;
+
+		const result = await sql<InvoiceModel[]>`
+			SELECT i.*
+			FROM ${sql(table)} i
+			JOIN accounts sa ON sa.id = i.seller_account_id
+			JOIN accounts pa ON pa.id = i.payer_account_id
+			JOIN guild_members pgm ON pgm.id = pa.guild_member_id
+			WHERE i.paid = ${paid}
+				AND sa.guild_member_id = ${member_id}
+				AND sa.currency_id = ${currency_id}
+				AND pgm.name ILIKE ${`%${name}%`}
+			ORDER BY i.id DESC
+			OFFSET ${offset}
+			LIMIT ${itemsPerPage + 1}`;
+
+		const items = this._list(result.slice(0, itemsPerPage));
+		const nextPage = result.length > itemsPerPage;
+
+		return {
+			items,
+			page,
+			next: nextPage
+		};
+	}
+
+	public async getListByPayerMemberIdAndCurrencyIdAndNamePart(
+		member_id: number,
+		currency_id: number,
+		paid: boolean,
+		name: string,
+		page: number
+	): Promise<PaginationType<InvoiceEntity>> {
+		const offset = (page - 1) * itemsPerPage;
+
+		const result = await sql<InvoiceModel[]>`
+			SELECT i.*
+			FROM ${sql(table)} i
+			JOIN accounts sa ON sa.id = i.seller_account_id
+			JOIN accounts pa ON pa.id = i.payer_account_id
+			JOIN guild_members sgm ON sgm.id = sa.guild_member_id
+			WHERE i.paid = ${paid}
+				AND pa.guild_member_id = ${member_id}
+				AND pa.currency_id = ${currency_id}
+				AND sgm.name ILIKE ${`%${name}%`}
+			ORDER BY i.id DESC
+			OFFSET ${offset}
+			LIMIT ${itemsPerPage + 1}`;
+
+		const items = this._list(result.slice(0, itemsPerPage));
+		const nextPage = result.length > itemsPerPage;
+
+		return {
+			items,
+			page,
+			next: nextPage
+		};
 	}
 
 	private _mapper(row: InvoiceModel): InvoiceModel {

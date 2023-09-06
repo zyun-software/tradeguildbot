@@ -53,8 +53,8 @@
 				createAnAd.description = '';
 				createAnAd.seller = '';
 			}
+			await loadList();
 		}
-		await loadList();
 		disabled = false;
 	};
 </script>

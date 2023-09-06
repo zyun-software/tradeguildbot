@@ -1,11 +1,17 @@
-import { Entity, type RepositorySave } from '$lib/server/core';
+import { Entity, RepositoryId, type RepositorySave } from '$lib/server/core';
+import type { GuildMemberEntity } from './guild-member';
 
-export abstract class AccountRepository implements RepositorySave<AccountEntity> {
+export abstract class AccountRepository
+	extends RepositoryId<AccountEntity>
+	implements RepositorySave<AccountEntity>
+{
 	public abstract updateBalance(entity: AccountEntity): Promise<void>;
 	public abstract updateReserve(entity: AccountEntity): Promise<void>;
 	public abstract updateMoneyRequest(entity: AccountEntity): Promise<void>;
 	public abstract updateMoneyRequestType(entity: AccountEntity): Promise<void>;
 	public abstract updateMoneyRequestAmount(entity: AccountEntity): Promise<void>;
+
+	public abstract getGuildMember(entity: AccountEntity): Promise<GuildMemberEntity>;
 
 	public abstract findByGuildMemberIdAndCurrencyId(
 		guild_member_id: number,
@@ -130,5 +136,11 @@ export class AccountEntity extends Entity<AccountModel, AccountRepository> {
 		}
 
 		return this;
+	}
+
+	public async getGuildMember(): Promise<GuildMemberEntity> {
+		const guildMember = await this.__repository.getGuildMember(this);
+
+		return guildMember;
 	}
 }
