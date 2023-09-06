@@ -61,8 +61,39 @@ export class UserEntity extends Entity<UserModel, UserRepository> {
 			this.__model.data.apiToken = {};
 		}
 
+		for (const existingToken in this.__model.data.apiToken) {
+			if (this.__model.data.apiToken.hasOwnProperty(existingToken)) {
+				if (this.__model.data.apiToken[existingToken] === guild_id) {
+					delete this.__model.data.apiToken[existingToken];
+				}
+			}
+		}
+
 		this.__model.data.apiToken[token] = guild_id;
 
 		return this.setData(this.__model.data);
+	}
+
+	public getApiGuildIdByToken(token: string): number | null {
+		const apiToken = this.__model.data.apiToken;
+		if (apiToken && apiToken[token]) {
+			return apiToken[token];
+		}
+
+		return null;
+	}
+
+	public getApiTokenByGuildId(guild_id: number): string | null {
+		const apiToken = this.__model.data.apiToken;
+
+		for (const token in apiToken) {
+			if (apiToken.hasOwnProperty(token)) {
+				if (apiToken[token] === guild_id) {
+					return token;
+				}
+			}
+		}
+
+		return null;
 	}
 }

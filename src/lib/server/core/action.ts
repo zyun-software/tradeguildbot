@@ -1,7 +1,7 @@
 import type { UserEntity } from '../domain';
 import type { GuardInterface } from './guard';
 
-type GuardsType = GuardInterface<any>[] | [];
+export type GuardsType = GuardInterface<any>[] | [];
 
 export abstract class ActionInterace<TData> {
 	public constructor(

@@ -1,6 +1,7 @@
 import type { UserEntity } from '$lib/server/domain';
 import { Api } from '../api';
 import {
+	ApiSettingsAction,
 	BillAction,
 	ChangeGuildMemberNicknameAction,
 	ChangeSelectedGuildIdAction,
@@ -39,6 +40,7 @@ export class Panel extends Api {
 		};
 
 		this._actions = {
+			'api-settings': new ApiSettingsAction([guard.guildMember], user, data),
 			bill: new BillAction([guard.guildMember], user, data),
 			'change-guild-member-nickname': new ChangeGuildMemberNicknameAction(
 				[guard.guildMaster],
