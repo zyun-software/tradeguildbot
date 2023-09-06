@@ -29,4 +29,11 @@ clean:
 	docker compose down --remove-orphans -v
 
 dev:
-	docker compose up postgres flyway app
+	docker compose up -d postgres
+	sleep 10
+	docker compose up flyway dev
+
+prod:
+	docker compose up -d postgres
+	sleep 10
+	docker compose up -d flyway prod

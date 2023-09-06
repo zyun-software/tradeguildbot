@@ -31,7 +31,7 @@ services:
     volumes:
       - ./:/home/node/app
 
-  app:
+  dev:
     extends:
       service: node
     command: yarn dev
@@ -39,6 +39,15 @@ services:
       - postgres
     ports:
       - ${APP_PORT}:5173
+
+  prod:
+    extends:
+      service: node
+    command: yarn prod
+    depends_on:
+      - postgres
+    ports:
+      - ${APP_PORT}:3000
 
 volumes:
   postgres_data:
