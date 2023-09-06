@@ -61,7 +61,7 @@ curl --location '{apiSettings.url}' \
 	"data": &#123;
 		"currency_id": [ID валюти],
 		"receiver": "[Псевдонім отримувача]",
-		"amount": [Кількість валюти],
+		"amount": [Сума],
 		"comment": "[Коментар]"
 	&#125;
 &#125;'
