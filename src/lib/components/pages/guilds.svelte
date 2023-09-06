@@ -1,13 +1,21 @@
 <script lang="ts">
 	import { guildId, guilds, pageComponent, selectedGuildId } from '$lib/stores';
+	import type { GuildType } from '$lib/types';
 	import { alertUtility, hideBackButton, requestUtility } from '$lib/utilities';
 	import { onMount } from 'svelte';
 	import Hint from '../parts/hint.svelte';
 	import Title from '../parts/title.svelte';
 	import Guild from './guild.svelte';
 
-	onMount(() => {
+	onMount(async () => {
 		hideBackButton();
+		const list = await requestUtility<GuildType[]>('get-guilds');
+		if (list) {
+			guilds.set(list);
+		}
+		if ($selectedGuildId) {
+			pageComponent.set(Guild);
+		}
 	});
 
 	let value: number = $guildId ?? 0;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Unauthorized from './components/pages/unauthorized.svelte';
-import { pageComponent } from './stores';
+import { pageComponent, unauthorized as unauth } from './stores';
 
 export function alertUtility(message: any): void {
 	const webApp = window?.Telegram?.WebApp;
@@ -79,12 +79,22 @@ export async function requestUtility<TResponse>(
 			success: boolean;
 			error: string;
 			response: TResponse;
-		}>('/panel', {
-			method,
-			data
-		});
+		}>(
+			'/panel',
+			{
+				method,
+				data
+			},
+			{
+				headers: {
+					'x-telegram-web-app-init-data': window.Telegram.WebApp.initData
+				}
+			}
+		);
 
 		const { unauthorized, success, error, response } = serverResponse.data;
+
+		unauth.set(unauthorized);
 
 		if (unauthorized) {
 			pageComponent.set(Unauthorized);

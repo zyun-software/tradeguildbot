@@ -25,7 +25,13 @@
 
 	let buttons: MenuButtonType[] = [];
 
-	let guild: GuildType;
+	let guild: GuildType = {
+		id: -1,
+		name: '',
+		isOwner: false,
+		isMember: false,
+		nickname: ''
+	};
 	const find = ($guilds ?? []).find((guild) => guild.id === $selectedGuildId);
 
 	if (find) {

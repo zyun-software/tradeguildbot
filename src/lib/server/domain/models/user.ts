@@ -18,6 +18,9 @@ export class UserDefaultValue {
 type UserDataType = {
 	[k: string]: any;
 	selectedGuildId?: number;
+	apiToken?: {
+		[token: string]: number;
+	};
 };
 
 export type UserModel = {
@@ -51,5 +54,15 @@ export class UserEntity extends Entity<UserModel, UserRepository> {
 		}
 
 		return this;
+	}
+
+	public async setApiToken(token: string, guild_id: number): Promise<UserEntity> {
+		if (!this.__model.data.apiToken) {
+			this.__model.data.apiToken = {};
+		}
+
+		this.__model.data.apiToken[token] = guild_id;
+
+		return this.setData(this.__model.data);
 	}
 }

@@ -1,6 +1,5 @@
 import { ActionInterace } from '$lib/server/core';
 import type { UserEntity } from '$lib/server/domain';
-import { findUserByTokenUtility } from './utilities';
 
 export type ApiActionExecuteType<TResponse> = {
 	success: boolean;
@@ -54,11 +53,11 @@ export abstract class Api {
 	}
 }
 
-export async function executeApi(
-	token: string,
-	type: 'panel' | 'api',
-	createApi: (user: UserEntity) => Api
-): Promise<{
+export async function executeApi<TDependencies>(options: {
+	findUser: () => Promise<UserEntity | null>;
+	createApi: (user: UserEntity, dependencies?: TDependencies) => Api | Promise<Api>;
+	createDependencies?: (user: UserEntity) => TDependencies | Promise<TDependencies>;
+}): Promise<{
 	unauthorized: boolean;
 	success: boolean;
 	error: string;
@@ -71,7 +70,7 @@ export async function executeApi(
 		response: null
 	};
 
-	const user = await findUserByTokenUtility(token, type);
+	const user = await options.findUser();
 
 	if (!user) {
 		result.unauthorized = true;
@@ -80,7 +79,11 @@ export async function executeApi(
 	}
 
 	try {
-		const api = createApi(user);
+		let dependencies = undefined;
+		if (options.createDependencies) {
+			dependencies = await options.createDependencies(user);
+		}
+		const api = await options.createApi(user, dependencies);
 		const apiResult = await api.getResponse();
 		if (apiResult) {
 			return {

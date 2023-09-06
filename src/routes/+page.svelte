@@ -1,33 +1,31 @@
 <script lang="ts">
-	import Guild from '$lib/components/pages/guild.svelte';
 	import Guilds from '$lib/components/pages/guilds.svelte';
 	import Unauthorized from '$lib/components/pages/unauthorized.svelte';
-
-	export let data;
 
 	import '$lib/styles.css';
 
 	import {
 		currentPageComponent,
-		guildId,
-		guilds,
 		pageComponent,
 		selectedGuildId,
-		token
+		unauthorized
 	} from '$lib/stores.js';
+	import { requestUtility } from '$lib/utilities';
+	import { onMount } from 'svelte';
 
-	token.set(data.token);
-	guilds.set(data.guilds);
-	guildId.set(data.guildId);
-	selectedGuildId.set(data.guildId);
+	onMount(async () => {
+		const value = await requestUtility<number | null>('get-selected-guild-id');
+		selectedGuildId.set(value);
+		pageComponent.set(Guilds);
+	});
 
 	pageComponent.subscribe((component) => {
-		if (data.unauthorized) {
+		if ($unauthorized) {
 			currentPageComponent.set(Unauthorized);
 		} else if (component) {
 			currentPageComponent.set(component);
 		} else {
-			currentPageComponent.set($selectedGuildId ? Guild : Guilds);
+			currentPageComponent.set(Guilds);
 		}
 	});
 </script>

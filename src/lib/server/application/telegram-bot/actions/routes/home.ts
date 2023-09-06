@@ -1,5 +1,5 @@
 import { DONATE_URL, PANEL_URL } from '$env/static/private';
-import { DependencyInjection, createTokenUtility } from '$lib/server/application';
+import { DependencyInjection } from '$lib/server/application';
 import type { UserEntity } from '$lib/server/domain';
 import { TelegramBotAction } from '../../interfaces';
 
@@ -17,15 +17,13 @@ export class HomeRoute extends TelegramBotAction<any> {
 					text: `[Посилання для пожертв](${DONATE_URL})`
 				});
 			default:
-				const token = createTokenUtility(user.id, 'panel');
-
 				await telegram('setChatMenuButton', {
 					chat_id: user.id,
 					menu_button: {
 						type: 'web_app',
 						text: 'Панель',
 						web_app: {
-							url: `${PANEL_URL}?token=${token}`
+							url: PANEL_URL
 						}
 					}
 				});

@@ -107,13 +107,23 @@ export class ProcessExchangeOfferAction extends ApiAction<
 					const telegram = DependencyInjection.RequestRepository.telegram;
 
 					await telegram('sendMessage', {
+						chat_id: guildMember.user_id,
+						text:
+							'💱 Ви купили валюту на біржі\n\n' +
+							`🏛️ Гільдія: ${guild.name}\n` +
+							`🛒 Продано: ${exchangeProposal.buy_amount} ${sellerBuy.currency.code}\n` +
+							`🛍️ Куплено: ${exchangeProposal.sell_amount} ${sellerSell.currency.code}\n\n` +
+							`#біржа #${sellerBuy.currency.code} #${sellerSell.currency.code}`
+					});
+
+					await telegram('sendMessage', {
 						chat_id: sellerGuildMember.user_id,
 						text:
-							'💱 Відбувся обмін \n\n' +
+							'💱 Ви продали валюту на біржі\n\n' +
 							`🏛️ Гільдія: ${guild.name}\n` +
 							`🛒 Продано: ${exchangeProposal.sell_amount} ${sellerSell.currency.code}\n` +
-							`🛍️ Куплено: ${exchangeProposal.buy_amount} ${sellerBuy.currency.code} \n\n` +
-							`#обмін`
+							`🛍️ Куплено: ${exchangeProposal.buy_amount} ${sellerBuy.currency.code}\n\n` +
+							`#біржа #${sellerBuy.currency.code} #${sellerSell.currency.code}`
 					});
 
 					result.success = true;

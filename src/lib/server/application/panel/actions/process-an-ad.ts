@@ -47,7 +47,6 @@ export class ProcessAnAdAction extends ApiAction<
 
 				return result;
 			} else {
-				console.log(this._data);
 				const announcement = await announcementRepository.findById(this._data.id ?? -1);
 
 				if (!announcement || announcement.guild_member_id !== guildMember.id) {

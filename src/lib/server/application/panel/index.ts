@@ -14,6 +14,8 @@ import {
 	GetGuildAnnouncementUniqueTitlesAction,
 	GetGuildCurrenciesAction,
 	GetGuildMemberNicknamesAction,
+	GetGuildsAction,
+	GetSelectedGuildIdAction,
 	ProcessAnAdAction,
 	ProcessExchangeOfferAction,
 	ProcessGuildCurrencyAction,
@@ -68,6 +70,8 @@ export class Panel extends Api {
 				user,
 				data
 			),
+			'get-guilds': new GetGuildsAction([], user, data),
+			'get-selected-guild-id': new GetSelectedGuildIdAction([], user, data),
 			'process-an-ad': new ProcessAnAdAction([guard.guildMember], user, data),
 			'process-exchange-offer': new ProcessExchangeOfferAction([guard.guildMember], user, data),
 			'process-guild-currency': new ProcessGuildCurrencyAction([guard.guildMaster], user, data),
