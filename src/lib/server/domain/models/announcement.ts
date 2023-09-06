@@ -23,6 +23,15 @@ export abstract class AnnouncementRepository
 		guild_member_id: number,
 		page: number
 	): Promise<PaginationType<AnnouncementEntity>>;
+	public abstract getUniqueTitlesByTitlePartAndGuildId(
+		titlePart: string,
+		guild_id: number,
+		page: number
+	): Promise<PaginationType<string>>;
+	public abstract getListByTitleAndGuildId(
+		title: string,
+		guild_id: number
+	): Promise<AnnouncementEntity[]>;
 
 	public abstract getGuildMember(entity: AnnouncementEntity): Promise<GuildMemberEntity>;
 
@@ -90,7 +99,7 @@ export class AnnouncementEntity extends Entity<AnnouncementModel, AnnouncementRe
 
 	private set _seller(value: string) {
 		if (!this._regex.test(value)) {
-			throw new Error('В поле продавець потрібно вставити посилання на пост Telegram');
+			throw new Error('В поле автор потрібно вставити посилання на пост Telegram');
 		}
 
 		this.__model.seller = value;

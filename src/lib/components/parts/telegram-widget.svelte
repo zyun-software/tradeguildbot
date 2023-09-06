@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte';
 
 	export let post: string;
+
+	post = post.replace('https://t.me/', '');
+
 	let dark = false;
 
 	onMount(() => {

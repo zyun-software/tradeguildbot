@@ -138,7 +138,7 @@
 					/>
 					<Input
 						id="save-seller-{id}"
-						name="🔗 Продавець"
+						name="🔗 Автор"
 						value={seller}
 						required={true}
 						onInput={(value) => {

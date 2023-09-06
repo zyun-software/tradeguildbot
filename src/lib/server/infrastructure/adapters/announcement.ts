@@ -143,6 +143,49 @@ export class AnnouncementAdapter extends AnnouncementRepository {
 		};
 	}
 
+	public async getUniqueTitlesByTitlePartAndGuildId(
+		titlePart: string,
+		guild_id: number,
+		page: number
+	): Promise<PaginationType<string>> {
+		const offset = (page - 1) * itemsPerPage;
+
+		const result = await sql<{ title: string }[]>`
+			SELECT DISTINCT a.title
+			FROM ${sql(table)} a
+			JOIN guild_members gm ON a.guild_member_id = gm.id
+			WHERE a.title ILIKE ${`%${titlePart}%`} AND gm.guild_id = ${guild_id}
+			ORDER BY a.title
+			OFFSET ${offset}
+			LIMIT ${itemsPerPage + 1}`;
+
+		const items = result.slice(0, itemsPerPage).map((row) => row.title);
+		const nextPage = result.length > itemsPerPage;
+
+		return {
+			items,
+			page,
+			next: nextPage
+		};
+	}
+
+	public async getListByTitleAndGuildId(
+		title: string,
+		guild_id: number
+	): Promise<AnnouncementEntity[]> {
+		const result = await sql<AnnouncementModel[]>`
+			SELECT *
+			FROM ${sql(table)} AS a
+			JOIN guild_members AS gm ON a.guild_member_id = gm.id
+			WHERE a.title = ${title} AND gm.guild_id = ${guild_id}
+			ORDER BY a.title
+		`;
+
+		const items = this._list(result);
+
+		return items;
+	}
+
 	private _mapper(row: AnnouncementModel): AnnouncementModel {
 		return {
 			...row,

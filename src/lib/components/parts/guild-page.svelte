@@ -21,6 +21,7 @@
 	export let mountCallback:
 		| ((options: { guild: typeof guild; currency: typeof currency }) => void | Promise<void>)
 		| undefined = undefined;
+	export let backButtonCallback: (() => void | Promise<void>) | undefined = undefined;
 
 	const find = ($guilds ?? []).find((guild) => guild.id === $selectedGuildId);
 
@@ -32,7 +33,10 @@
 	let announcementUniqueTitlesOptions: string[] = [];
 
 	onMount(async () => {
-		showBackButton(() => {
+		showBackButton(async () => {
+			if (backButtonCallback) {
+				await backButtonCallback();
+			}
 			pageComponent.set(backToPage);
 		});
 

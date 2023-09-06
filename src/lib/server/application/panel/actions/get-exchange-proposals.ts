@@ -73,6 +73,11 @@ export class GetExchangeProposalsAction extends ApiAction<
 				this._data.page
 			);
 
+			if (!pagination.items.length) {
+				result.error = 'Пропозиції обміну не знайдено';
+				return result;
+			}
+
 			return getPaginatedResult(pagination);
 		}
 
