@@ -40,7 +40,7 @@ export class ProcessInvoiceAction extends ApiAction<
 			return result;
 		}
 
-		const guildRepository = DependencyInjection.GuildMemberRepository;
+		const guildRepository = DependencyInjection.GuildRepository;
 		const guild = await guildRepository.getById(this._data.guild_id);
 
 		const telegram = DependencyInjection.RequestRepository.telegram;
