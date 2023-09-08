@@ -33,9 +33,13 @@
 			page,
 			...exchange
 		});
-		if (response) {
-			exchangeProposals = response;
-		}
+		exchangeProposals = response
+			? response
+			: {
+					items: [],
+					page: 1,
+					next: false
+			  };
 		disabled = false;
 	};
 

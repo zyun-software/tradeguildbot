@@ -27,9 +27,13 @@
 			page,
 			personal: true
 		});
-		if (response) {
-			pagination = response;
-		}
+		pagination = response
+			? response
+			: {
+					items: [],
+					page,
+					next: false
+			  };
 	};
 
 	let disabled: boolean = false;
