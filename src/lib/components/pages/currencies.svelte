@@ -34,8 +34,7 @@
 			...options
 		});
 		if (response) {
-			alertUtility(response);
-			await loadList();
+			alertUtility(response, loadList);
 			if (options.clear) {
 				currency.code = '';
 				currency.name = '';

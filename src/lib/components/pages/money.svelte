@@ -45,8 +45,7 @@
 					action
 				});
 				if (response) {
-					alertUtility(response);
-					await onSearchHandler();
+					alertUtility(response, onSearchHandler);
 				}
 				disabled = false;
 			}

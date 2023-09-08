@@ -42,8 +42,7 @@
 			...transaction
 		});
 		if (response) {
-			alertUtility(response);
-			await loadAccount();
+			alertUtility(response, loadAccount);
 			transaction.amount = '';
 			transaction.receiver = '';
 			transaction.comment = '';

@@ -49,11 +49,10 @@
 			...exchangeOffer
 		});
 		if (response) {
-			alertUtility(response);
+			alertUtility(response, loadExchangeProposals);
 			exchangeOffer.id = '';
 			exchangeOffer.sell_amount = '';
 			exchangeOffer.buy_amount = '';
-			await loadExchangeProposals();
 		}
 		disabled = false;
 	};

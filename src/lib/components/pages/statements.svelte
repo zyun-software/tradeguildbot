@@ -44,8 +44,7 @@
 					action
 				});
 				if (response) {
-					alertUtility(response);
-					await loadList();
+					alertUtility(response, loadList);
 				}
 				disabledProcess = false;
 			}
