@@ -54,9 +54,10 @@
 					id
 				});
 				if (response) {
-					alertUtility(response);
+					alertUtility(response, onSubmit);
+				} else {
+					await onSubmit();
 				}
-				await onSubmit();
 				disabled = false;
 			}
 		);

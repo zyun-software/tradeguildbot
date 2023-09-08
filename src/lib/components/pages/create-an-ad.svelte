@@ -47,13 +47,12 @@
 			...options
 		});
 		if (response) {
-			alertUtility(response);
+			alertUtility(response, loadList);
 			if (options.action === 'create') {
 				createAnAd.title = '';
 				createAnAd.description = '';
 				createAnAd.seller = '';
 			}
-			await loadList();
 		}
 		disabled = false;
 	};

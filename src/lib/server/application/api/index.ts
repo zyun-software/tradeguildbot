@@ -3,6 +3,7 @@ import { Api } from '../api';
 import {
 	CreateInvoiceAction,
 	GetCurrenciesAction,
+	GetGuildMemberNamesAction,
 	GetInvoiceAction,
 	TransactionAction
 } from './actions';
@@ -14,6 +15,7 @@ export class ApiJson extends Api {
 		this._actions = {
 			'create-invoice': new CreateInvoiceAction([], data, user, guild),
 			'get-currencies': new GetCurrenciesAction([], data, user, guild),
+			'get-guild-member-names': new GetGuildMemberNamesAction([], data, user, guild),
 			'get-invoice': new GetInvoiceAction([], data, user, guild),
 			transaction: new TransactionAction([], data, user, guild)
 		};
