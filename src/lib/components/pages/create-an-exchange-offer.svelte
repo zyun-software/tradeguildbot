@@ -25,9 +25,13 @@
 			personal: true,
 			page
 		});
-		if (response) {
-			exchangeProposals = response;
-		}
+		exchangeProposals = response
+			? response
+			: {
+					items: [],
+					page: 1,
+					next: false
+			  };
 	};
 
 	let exchangeOffer = {
