@@ -1,0 +1,40 @@
+name: SSH Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PATH: ${{ secrets.SSH_PATH }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+
+    steps:
+      - name: Налаштування SSH ключа
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa $SSH_HOST >> ~/.ssh/known_hosts
+
+      - name: Вимкнення проєкту
+        run: |
+          ssh $SSH_USER@$SSH_HOST "cd $SSH_PATH && make down"
+
+      - name: Завантаження змін
+        run: |
+          ssh $SSH_USER@$SSH_HOST "cd $SSH_PATH && git pull"
+
+      - name: Довстановлення можливих нових бібліотек
+        run: |
+          ssh $SSH_USER@$SSH_HOST "cd $SSH_PATH && make build"
+
+      - name: Запуск проєкту
+        run: |
+          ssh $SSH_USER@$SSH_HOST "cd $SSH_PATH && make prod"
