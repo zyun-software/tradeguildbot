@@ -40,7 +40,7 @@ export abstract class AnnouncementRepository
 }
 
 export class AnnouncementEntity extends Entity<AnnouncementModel, AnnouncementRepository> {
-	private _regex = /https:\/\/t\.me\/\w+\/\d+/;
+	private _regex = /^https:\/\/t\.me\/\w+\/\d+$/;
 
 	public get guild_member_id(): number {
 		return this.__model.guild_member_id;
