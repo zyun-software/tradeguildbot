@@ -96,7 +96,7 @@ curl --location '{apiSettings.url}' \
 --header 'x-token: {apiSettings.token}' \
 --header 'Content-Type: application/json' \
 --data '&#123;
-  "method": "get-guild-member-names"
+	"method": "get-guild-member-names"
 &#125;'
 </pre>
 </GuildPage>
