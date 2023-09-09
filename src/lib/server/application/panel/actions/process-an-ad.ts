@@ -63,9 +63,9 @@ export class ProcessAnAdAction extends ApiAction<
 					return result;
 				} else {
 					await announcement
-						.setTitle(this._data.title ?? '')
-						.then((announcement) => announcement.setDescription(this._data.description ?? ''))
-						.then((announcement) => announcement.setSeller(this._data.seller ?? ''));
+						.setDescription(this._data.description ?? '')
+						.then((a) => a.setSeller(this._data.seller ?? ''))
+						.then((a) => a.setTitle(this._data.title ?? ''));
 
 					result.success = true;
 					result.response = '✅ Оголошення відредаговано';
