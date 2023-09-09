@@ -106,7 +106,7 @@ export class AnnouncementEntity extends Entity<AnnouncementModel, AnnouncementRe
 	}
 
 	public async setSeller(value: string): Promise<AnnouncementEntity> {
-		this.__model.seller = value;
+		this._seller = value;
 		if (this.__created) {
 			await this.__repository.updateSeller(this);
 		}
